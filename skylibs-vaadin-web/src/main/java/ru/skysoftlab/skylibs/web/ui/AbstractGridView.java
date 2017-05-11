@@ -40,8 +40,8 @@ import com.vaadin.ui.VerticalLayout;
  * @param <P>
  *            провайдер
  */
-public abstract class AbstractGridView<T, F extends AbstractForm<T>>
-		extends BaseMenuView {
+public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
+		BaseMenuView {
 
 	private static final long serialVersionUID = 4734617922366685803L;
 
@@ -63,10 +63,16 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>>
 	@Override
 	public void enter(ViewChangeEvent event) {
 		configureComponents();
-		buildLayout();		
+		buildLayout();
 	}
 
-	private void configureComponents() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ru.skysoftlab.skylibs.web.ui.BaseMenuView#configureComponents()
+	 */
+	@Override
+	protected void configureComponents() {
 		try {
 			getEntityForm().setGridView(this);
 			// Create a persistent person container
@@ -121,7 +127,8 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>>
 			public void select(SelectionEvent event) {
 				Object itemId = grid.getSelectedRow();
 				if (itemId != null) {
-					getEntityForm().edit(jpaContainer.getItem(itemId).getEntity());
+					getEntityForm().edit(
+							jpaContainer.getItem(itemId).getEntity());
 				} else {
 					getEntityForm().edit(null);
 				}
@@ -135,7 +142,13 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>>
 
 	protected abstract EntityProvider<T> getEntityProvider();
 
-	private void buildLayout() {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ru.skysoftlab.skylibs.web.ui.BaseMenuView#buildLayout()
+	 */
+	@Override
+	protected void buildLayout() {
 		HorizontalLayout actions = new HorizontalLayout(filter, newEntityButton);
 		actions.setSpacing(true);
 		actions.setMargin(new MarginInfo(true, true, true, false));
@@ -150,7 +163,8 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>>
 		grid.setSizeFull();
 		left.setExpandRatio(grid, 1);
 
-		HorizontalLayout mainLayout = new HorizontalLayout(left, getEntityForm());
+		HorizontalLayout mainLayout = new HorizontalLayout(left,
+				getEntityForm());
 		mainLayout.setSizeFull();
 		mainLayout.setExpandRatio(left, 1);
 

@@ -35,10 +35,11 @@
 				<include>**/*.xml</include>
 			</includes>
 		</fileSet>
-		<fileSet encoding="UTF-8">
+		<fileSet filtered="true" encoding="UTF-8">
 			<directory>src/main/resources</directory>
 			<includes>
 				<include>**/*.config</include>
+				<include>**/*.ViewsPackageSet</include>
 			</includes>
 		</fileSet>
 		<fileSet encoding="UTF-8">
@@ -47,6 +48,13 @@
 				<include>**/*.css</include>
 				<include>**/*.ico</include>
 				<include>**/*.scss</include>
+			</includes>
+		</fileSet>
+		<fileSet filtered="true" encoding="UTF-8">
+			<directory></directory>
+			<includes>
+				<include>**/tomee.xml</include>
+				<include>**/README.md</include>
 			</includes>
 		</fileSet>
 	</fileSets>

@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.VerticalLayout;
@@ -33,4 +34,21 @@ public abstract class BaseMenuView extends CustomComponent implements View {
 		// layout.setStyleName(Reindeer.LAYOUT_BLACK);
 	}
 
+	@Override
+	public void enter(ViewChangeEvent event) {
+		configureComponents();
+		layout.removeAllComponents();
+		layout.addComponent(barmenu);
+		buildLayout();
+	}
+
+	/**
+	 * 
+	 */
+	protected abstract void configureComponents();
+	
+	/**
+	 * 
+	 */
+	protected abstract void buildLayout();
 }

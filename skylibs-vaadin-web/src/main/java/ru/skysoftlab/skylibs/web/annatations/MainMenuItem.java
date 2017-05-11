@@ -27,5 +27,8 @@ public @interface MainMenuItem {
 
 	@Nonbinding
 	int order() default 0;
-
+	
+	@Nonbinding
+	boolean hasChilds() default true;
+	
 }

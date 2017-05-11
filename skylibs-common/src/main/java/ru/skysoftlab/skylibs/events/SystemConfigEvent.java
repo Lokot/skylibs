@@ -3,7 +3,7 @@ package ru.skysoftlab.skylibs.events;
 import java.util.Map;
 
 /**
- * Назначение нового интервала сканирования.
+ * Событие изменения системных настроек.
  * 
  * @author Локтионов А.Г.
  *

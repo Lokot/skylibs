@@ -20,7 +20,7 @@ import com.vaadin.cdi.server.VaadinCDIServlet;
 @WebServlet(value = "/*", asyncSupported = true, initParams = { @WebInitParam(name = "session-timeout", value = "60"),
 		@WebInitParam(name = "UIProvider", value = "com.vaadin.cdi.CDIUIProvider"),
 		@WebInitParam(name = "viewprovider", value = "com.vaadin.cdi.CDIViewProvider") })
-@VaadinServletConfiguration(productionMode = false, ui = MainVaadinUI.class, closeIdleSessions = true, widgetset = "${package}.widgetset.VaadinauthWidgetset")
+@VaadinServletConfiguration(productionMode = false, ui = MainVaadinUI.class, closeIdleSessions = true, widgetset = "${package}.widgetset.VaadinWidgetset")
 public class Servlet extends VaadinCDIServlet {
 
 	private static final long serialVersionUID = 2918754860952978590L;

@@ -10,8 +10,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import ${package}.ejb.TestBean;
+import ${package}.web.MainMenu;
 import ru.skysoftlab.skylibs.security.RolesList;
-import ru.skysoftlab.skylibs.web.navigation.NavigationService;
 import ru.skysoftlab.skylibs.web.ui.BaseMenuView;
 
 import com.vaadin.cdi.CDIView;
@@ -31,7 +31,7 @@ import com.vaadin.ui.Notification.Type;
  * @author Loktionov Artem
  *
  */
-@CDIView(NavigationService.MAIN)
+@CDIView(MainMenu.MAIN)
 @RolesAllowed({ RolesList.USER, RolesList.ADMIN })
 public class MainView extends BaseMenuView {
 
@@ -71,5 +71,15 @@ public class MainView extends BaseMenuView {
 	public void enter(ViewChangeEvent event) {
 		String username = String.valueOf(getSession().getAttribute("user"));
 		text.setValue("Hello " + username);
+	}
+	
+	@Override
+	protected void configureComponents() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	protected void buildLayout() {
+		// TODO Auto-generated method stub
 	}
 }

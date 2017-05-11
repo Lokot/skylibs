@@ -2,10 +2,12 @@ package ru.skysoftlab.skylibs.web.ui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -46,22 +48,27 @@ public class MenuProducer implements Serializable {
 	@Inject
 	private AccessControl authenticator;
 
-	// TODO выкинуть в настройки ???
-	private String[] packages = { "ru.skysoftlab.smarthome.heating.ui.impl" };
+	private static ServiceLoader<ViewsPackageSet> packagesLoader = ServiceLoader
+			.load(ViewsPackageSet.class);
 
 	@Produces
 	public MenuBar createMenuBar() {
 		MenuBar rv = new MenuBar();
 		rv.addItem("Главная", new NavigationCommand(NavigationService.MAIN));
-		SortedMap<MenuItemDto, List<Class<? extends BaseMenuView>>> viewsMap = getMenuViews(getViewsClasses(packages));
+		SortedMap<MenuItemDto, List<Class<? extends BaseMenuView>>> viewsMap = getMenuViews(getViewsClasses(getPackages()));
 		for (MenuItemDto menuItemDto : viewsMap.keySet()) {
-			List<Class<? extends BaseMenuView>> subMenuViewsClasses = viewsMap.get(menuItemDto);
+			List<Class<? extends BaseMenuView>> subMenuViewsClasses = viewsMap
+					.get(menuItemDto);
 			if (subMenuViewsClasses != null && subMenuViewsClasses.size() > 0) {
 				MenuItem item = rv.addItem(menuItemDto.getName(), null);
-				for (Class<? extends BaseMenuView> view : subMenuViewsClasses) {
-					CDIView cdiAnn = view.getAnnotation(CDIView.class);
-					MenuItemView menuItemView = view.getAnnotation(MenuItemView.class);
-					item.addItem(menuItemView.name(), new NavigationCommand(cdiAnn.value()));
+				if (menuItemDto.getViewClass() == null) {
+					for (Class<? extends BaseMenuView> view : subMenuViewsClasses) {
+						MenuItemView menuItemView = view
+								.getAnnotation(MenuItemView.class);
+						item.addItem(menuItemView.name(), createCommand(view));
+					}
+				} else {
+					item.setCommand(createCommand(menuItemDto.getViewClass()));
 				}
 			}
 		}
@@ -69,13 +76,31 @@ public class MenuProducer implements Serializable {
 		return rv;
 	}
 
-	private Set<Class<? extends BaseMenuView>> getViewsClasses(String... packages) {
+	private NavigationCommand createCommand(Class<? extends BaseMenuView> clazz) {
+		CDIView cdiAnn = clazz.getAnnotation(CDIView.class);
+		return new NavigationCommand(cdiAnn.value());
+	}
+
+	private String[] getPackages() {
+		Set<String> rv = new HashSet<>();
+		for (ViewsPackageSet cp : packagesLoader) {
+			String[] enc = cp.getViewsPackages();
+			if (enc != null)
+				rv.addAll(Arrays.asList(enc));
+		}
+		return rv.toArray(new String[rv.size()]);
+	}
+
+	private Set<Class<? extends BaseMenuView>> getViewsClasses(
+			String... packages) {
 		Set<Class<? extends BaseMenuView>> classes = new HashSet<>();
 		for (String packageName : packages) {
 			Reflections reflections = new Reflections(packageName);
-			for (Class<?> cdiViewClass : reflections.getTypesAnnotatedWith(CDIView.class)) {
+			for (Class<?> cdiViewClass : reflections
+					.getTypesAnnotatedWith(CDIView.class)) {
 				try {
-					Class<? extends BaseMenuView> bmvClass = cdiViewClass.asSubclass(BaseMenuView.class);
+					Class<? extends BaseMenuView> bmvClass = cdiViewClass
+							.asSubclass(BaseMenuView.class);
 					classes.add(bmvClass);
 				} catch (ClassCastException e) {
 				}
@@ -153,10 +178,11 @@ public class MenuProducer implements Serializable {
 				});
 
 		for (Class<? extends BaseMenuView> viewClass : classes) {
-			if (viewClass.isAnnotationPresent(CDIView.class) && viewClass.isAnnotationPresent(MainMenuItem.class)
-					&& viewClass.isAnnotationPresent(MenuItemView.class)) {
+			if (viewClass.isAnnotationPresent(CDIView.class)
+					&& viewClass.isAnnotationPresent(MainMenuItem.class)) {
 				MenuItemDto key = createDto(viewClass);
-				List<Class<? extends BaseMenuView>> menuItems = viewsForMenuBar.get(key);
+				List<Class<? extends BaseMenuView>> menuItems = viewsForMenuBar
+						.get(key);
 				// добавляем главный пункт
 				if (menuItems == null) {
 					menuItems = new ArrayList<>();
@@ -170,7 +196,8 @@ public class MenuProducer implements Serializable {
 		}
 
 		// сортировка всех подменю
-		for (List<Class<? extends BaseMenuView>> baseMenuView : viewsForMenuBar.values()) {
+		for (List<Class<? extends BaseMenuView>> baseMenuView : viewsForMenuBar
+				.values()) {
 			Collections.sort(baseMenuView, MenuItemView.VIEW_QUALIFIER_ORDER);
 		}
 		return viewsForMenuBar;
@@ -178,7 +205,8 @@ public class MenuProducer implements Serializable {
 
 	private boolean isShow(Class<?> viewClass) {
 		if (viewClass.isAnnotationPresent(RolesAllowed.class)) {
-			RolesAllowed rolesAllowed = viewClass.getAnnotation(RolesAllowed.class);
+			RolesAllowed rolesAllowed = viewClass
+					.getAnnotation(RolesAllowed.class);
 			if (authenticator.isUserInSomeRole(rolesAllowed.value())) {
 				return true;
 			}
@@ -190,7 +218,14 @@ public class MenuProducer implements Serializable {
 
 	private MenuItemDto createDto(Class<? extends BaseMenuView> viewClass) {
 		MainMenuItem mainMenuItem = viewClass.getAnnotation(MainMenuItem.class);
-		return new MenuItemDto(mainMenuItem.name(), mainMenuItem.order());
+		MenuItemDto rv = new MenuItemDto(mainMenuItem.name(),
+				mainMenuItem.order());
+		if (!mainMenuItem.hasChilds()) {
+			if (isShow(viewClass)) {
+				rv.setViewClass(viewClass);
+			}
+		}
+		return rv;
 	}
 
 	/**
@@ -202,6 +237,7 @@ public class MenuProducer implements Serializable {
 
 		private String name;
 		private int order;
+		private Class<? extends BaseMenuView> viewClass;
 
 		public MenuItemDto(String name, int order) {
 			this.name = name;
@@ -219,6 +255,14 @@ public class MenuProducer implements Serializable {
 		@Override
 		public int compareTo(MenuItemDto o) {
 			return Integer.compare(order, o.getOrder());
+		}
+
+		public Class<? extends BaseMenuView> getViewClass() {
+			return viewClass;
+		}
+
+		public void setViewClass(Class<? extends BaseMenuView> viewClass) {
+			this.viewClass = viewClass;
 		}
 	}
 }

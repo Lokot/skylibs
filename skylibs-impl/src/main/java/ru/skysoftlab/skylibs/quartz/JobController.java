@@ -50,8 +50,8 @@ public abstract class JobController {
 	public void scheduleJobs() {
 		scheduler = ra.getScheduler();
 		try {
-			scheduler.setJobFactory(jobFactory);
-			scheduler.start();
+			getScheduler().setJobFactory(jobFactory);
+			getScheduler().start();
 		} catch (SchedulerException e) {
 			LOG.error("Error while creating scheduler", e);
 		}
@@ -73,9 +73,9 @@ public abstract class JobController {
 
 	@PreDestroy
 	public void stopJobs() {
-		if (scheduler != null) {
+		if (getScheduler() != null) {
 			try {
-				scheduler.shutdown(false);
+				getScheduler().shutdown(false);
 			} catch (SchedulerException e) {
 				LOG.error("Error while closing scheduler", e);
 			}
@@ -89,9 +89,9 @@ public abstract class JobController {
 	 * @param cronString
 	 * @throws SchedulerException
 	 */
-	private void rescheduleJobNow(TriggerKey key, String cronString) throws SchedulerException {
+	protected void rescheduleJobNow(TriggerKey key, String cronString) throws SchedulerException {
 		Trigger trigger = createCronTrigger(key, cronString, null);
-		scheduler.rescheduleJob(key, trigger);
+		getScheduler().rescheduleJob(key, trigger);
 		LOG.debug("RescheduleJob " + key + " = " + cronString);
 	}
 
@@ -103,7 +103,7 @@ public abstract class JobController {
 	 * @param start
 	 * @return
 	 */
-	private Trigger createCronTrigger(TriggerKey key, String cronString, Date start) {
+	protected Trigger createCronTrigger(TriggerKey key, String cronString, Date start) {
 		TriggerBuilder<Trigger> rv = TriggerBuilder.newTrigger().withIdentity(key);
 		if (start == null) {
 			rv.startNow();
@@ -122,15 +122,19 @@ public abstract class JobController {
 	 * @param tKey
 	 * @param startDate
 	 */
-	private void createFutureJob(Class<? extends Job> jobClass, String name, String group, Date startDate) {
+	protected void createFutureJob(Class<? extends Job> jobClass, String name, String group, Date startDate) {
 		try {
 			final JobDetail alarmJob = JobBuilder.newJob(jobClass).withIdentity(name, group).build();
 			final SimpleTrigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group).forJob(alarmJob)
 					.startAt(startDate).withSchedule(SimpleScheduleBuilder.simpleSchedule()).build();
-			scheduler.scheduleJob(alarmJob, trigger);
+			getScheduler().scheduleJob(alarmJob, trigger);
 		} catch (SchedulerException e) {
 			LOG.error("Error create scan temp job", e);
 		}
 	}
 
+	public Scheduler getScheduler() {
+		return scheduler;
+	}
+	
 }

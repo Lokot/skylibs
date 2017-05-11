@@ -37,9 +37,9 @@ public class LoginView extends CustomComponent implements View,
 	@Inject
 	private javax.enterprise.event.Event<NavigationEvent> navigationEvent;
 
-	private TextField user = new TextField("User:");
-	private PasswordField password = new PasswordField("Password:");
-	private Button loginButton = new Button("Login", this);
+	private TextField user = new TextField("Пользователь:");
+	private PasswordField password = new PasswordField("Пароль:");
+	private Button loginButton = new Button("Вход", this);
 
 	@Override
 	public void enter(ViewChangeEvent event) {
