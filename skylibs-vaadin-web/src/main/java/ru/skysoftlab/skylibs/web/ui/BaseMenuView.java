@@ -36,6 +36,7 @@ public abstract class BaseMenuView extends CustomComponent implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
+		getUI().setPollInterval(-1);
 		configureComponents();
 		layout.removeAllComponents();
 		layout.addComponent(barmenu);

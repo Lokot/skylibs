@@ -1,0 +1,91 @@
+{
+    "properties": {
+        "chart": {
+            "properties": {
+                "type": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "plotOptions": {
+            "properties": {
+                "line": {
+                    "properties": {
+                        "dataLabels": {
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "enableMouseTracking": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "series": {
+            "items": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "type": "integer"
+                        },
+                        "type": "array"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "subtitle": {
+            "properties": {
+                "text": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "title": {
+            "properties": {
+                "text": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "xAxis": {
+            "properties": {
+                "categories": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "yAxis": {
+            "properties": {
+                "title": {
+                    "properties": {
+                        "text": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "type": "object"
+}

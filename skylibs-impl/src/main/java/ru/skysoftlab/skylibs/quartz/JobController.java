@@ -7,14 +7,15 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+//import javax.ejb.Singleton;
+//import javax.ejb.Startup;
 import javax.inject.Inject;
 
 import org.apache.openejb.quartz.CronScheduleBuilder;
 import org.apache.openejb.quartz.Job;
 import org.apache.openejb.quartz.JobBuilder;
 import org.apache.openejb.quartz.JobDetail;
+import org.apache.openejb.quartz.JobKey;
 import org.apache.openejb.quartz.Scheduler;
 import org.apache.openejb.quartz.SchedulerException;
 import org.apache.openejb.quartz.SimpleScheduleBuilder;
@@ -32,8 +33,8 @@ import org.slf4j.LoggerFactory;
  * @author Локтионов А.Г.
  *
  */
-//@Startup
-//@Singleton
+// @Startup
+// @Singleton
 public abstract class JobController {
 
 	private Logger LOG = LoggerFactory.getLogger(JobController.class);
@@ -89,10 +90,22 @@ public abstract class JobController {
 	 * @param cronString
 	 * @throws SchedulerException
 	 */
-	protected void rescheduleJobNow(TriggerKey key, String cronString) throws SchedulerException {
+	protected void rescheduleJobNow(TriggerKey key, String cronString)
+			throws SchedulerException {
 		Trigger trigger = createCronTrigger(key, cronString, null);
 		getScheduler().rescheduleJob(key, trigger);
 		LOG.debug("RescheduleJob " + key + " = " + cronString);
+	}
+
+	/**
+	 * Останавливает задачу.
+	 * 
+	 * @param key
+	 * @throws SchedulerException
+	 */
+	protected void resumeJobNow(JobKey key) throws SchedulerException {
+		getScheduler().resumeJob(key);
+		LOG.debug("ResumeJob " + key);
 	}
 
 	/**
@@ -103,8 +116,10 @@ public abstract class JobController {
 	 * @param start
 	 * @return
 	 */
-	protected Trigger createCronTrigger(TriggerKey key, String cronString, Date start) {
-		TriggerBuilder<Trigger> rv = TriggerBuilder.newTrigger().withIdentity(key);
+	protected Trigger createCronTrigger(TriggerKey key, String cronString,
+			Date start) {
+		TriggerBuilder<Trigger> rv = TriggerBuilder.newTrigger().withIdentity(
+				key);
 		if (start == null) {
 			rv.startNow();
 		} else {
@@ -122,11 +137,16 @@ public abstract class JobController {
 	 * @param tKey
 	 * @param startDate
 	 */
-	protected void createFutureJob(Class<? extends Job> jobClass, String name, String group, Date startDate) {
+	protected void createFutureJob(Class<? extends Job> jobClass, String name,
+			String group, Date startDate) {
 		try {
-			final JobDetail alarmJob = JobBuilder.newJob(jobClass).withIdentity(name, group).build();
-			final SimpleTrigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group).forJob(alarmJob)
-					.startAt(startDate).withSchedule(SimpleScheduleBuilder.simpleSchedule()).build();
+			final JobDetail alarmJob = JobBuilder.newJob(jobClass)
+					.withIdentity(name, group).build();
+			final SimpleTrigger trigger = TriggerBuilder.newTrigger()
+					.withIdentity(name, group).forJob(alarmJob)
+					.startAt(startDate)
+					.withSchedule(SimpleScheduleBuilder.simpleSchedule())
+					.build();
 			getScheduler().scheduleJob(alarmJob, trigger);
 		} catch (SchedulerException e) {
 			LOG.error("Error create scan temp job", e);
@@ -136,5 +156,5 @@ public abstract class JobController {
 	public Scheduler getScheduler() {
 		return scheduler;
 	}
-	
+
 }

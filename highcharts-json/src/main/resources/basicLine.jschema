@@ -1,0 +1,78 @@
+{
+    "properties": {
+        "legend": {
+            "properties": {
+                "align": {
+                    "type": "string"
+                },
+                "layout": {
+                    "type": "string"
+                },
+                "verticalAlign": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "plotOptions": {
+            "properties": {
+                "series": {
+                    "properties": {
+                        "pointStart": {
+                            "type": "integer"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        },
+        "series": {
+            "items": {
+                "properties": {
+                    "data": {
+                        "items": {
+                            "type": "integer"
+                        },
+                        "type": "array"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "type": "array"
+        },
+        "subtitle": {
+            "properties": {
+                "text": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "title": {
+            "properties": {
+                "text": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "yAxis": {
+            "properties": {
+                "title": {
+                    "properties": {
+                        "text": {
+                            "type": "string"
+                        }
+                    },
+                    "type": "object"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "type": "object"
+}

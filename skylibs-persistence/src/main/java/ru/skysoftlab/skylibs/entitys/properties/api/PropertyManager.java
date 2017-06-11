@@ -3,9 +3,9 @@ package ru.skysoftlab.skylibs.entitys.properties.api;
 import java.util.Date;
 import java.util.List;
 
-import javax.ejb.Local;
-
-@Local
+//import javax.ejb.Local;
+//
+//@Local
 public interface PropertyManager {
 	
 	public void setStringProperty(String key, String value);
