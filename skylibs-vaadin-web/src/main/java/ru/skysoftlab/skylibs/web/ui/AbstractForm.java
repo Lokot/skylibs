@@ -45,7 +45,7 @@ public abstract class AbstractForm<T> extends FormLayout {
 		buildLayout();
 	}
 
-	private void configureComponents() {
+	protected void configureComponents() {
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
 		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 		setVisible(false);
