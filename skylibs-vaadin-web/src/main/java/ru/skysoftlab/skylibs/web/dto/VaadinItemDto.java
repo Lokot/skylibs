@@ -1,17 +1,21 @@
 package ru.skysoftlab.skylibs.web.dto;
 
-public class VaadinItemDto {
+import java.io.Serializable;
 
-	private Object obj;
+public class VaadinItemDto implements Serializable {
+
+	private static final long serialVersionUID = -8369983867643276831L;
+	
+	private Serializable obj;
 	private String name;
 
-	public VaadinItemDto(Object obj, String name) {
+	public VaadinItemDto(Serializable obj, String name) {
 		this.obj = obj;
 		this.name = name;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T getObj() {
+	public <T extends Serializable> T getObj() {
 		return (T) obj;
 	}
 
