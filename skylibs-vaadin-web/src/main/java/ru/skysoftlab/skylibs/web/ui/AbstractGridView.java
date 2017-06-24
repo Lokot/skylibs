@@ -132,7 +132,6 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 				} else {
 					getEntityForm().edit(null);
 				}
-				// contactForm.edit((Sensor) contactList.getSelectedRow());
 			}
 		});
 		refreshData();

@@ -54,6 +54,7 @@ public class NavigationServiceImpl implements NavigationService {
 				ui.getNavigator().navigateTo(event.getNavigateTo());
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			Notification.show(e.getMessage(), Type.TRAY_NOTIFICATION);
 			// throw new RuntimeException(e);
 		}
