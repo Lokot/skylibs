@@ -16,13 +16,17 @@ import ${package}.web.MainMenu;
 import ru.skysoftlab.skylibs.events.SystemConfigEvent;
 import ru.skysoftlab.skylibs.security.RolesList;
 import ru.skysoftlab.skylibs.web.annatations.MainMenuItem;
+import ru.skysoftlab.skylibs.web.annatations.MenuItemView;
 import ru.skysoftlab.skylibs.web.ui.BaseMenuView;
+import ru.skysoftlab.test.web.web.MainMenu;
+import ru.skysoftlab.test.web.web.MainMenu.ConfigMenu;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.FormLayout;
@@ -30,6 +34,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -40,7 +45,8 @@ import com.vaadin.ui.VerticalLayout;
  *
  */
 @CDIView(MainMenu.SYSTEM)
-@MainMenuItem(name = "Настройки", order = MainMenu.CONFIG, hasChilds = false)
+@MainMenuItem(name = "Настройки", order = MainMenu.CONFIG)
+@MenuItemView(name = "Конфигурация", order = ConfigMenu.CONFIG_CONFIG)
 @RolesAllowed({ RolesList.ADMIN })
 public class SystemConfig extends BaseMenuView implements Button.ClickListener,
 		ValueChangeListener {
@@ -72,6 +78,8 @@ public class SystemConfig extends BaseMenuView implements Button.ClickListener,
 
 	@Override
 	protected void buildLayout() {
+		save.setStyleName(ValoTheme.BUTTON_PRIMARY);
+		save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 		Label title = new Label("Системные настройки");
 		FormLayout form = new FormLayout(simpleProp, save);
 		formFieldBindings = BeanFieldGroup.bindFieldsBuffered(dto, this);
