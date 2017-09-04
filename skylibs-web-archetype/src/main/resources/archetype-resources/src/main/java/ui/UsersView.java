@@ -6,8 +6,8 @@ package ${package}.ui;
 import ru.skysoftlab.skylibs.web.annatations.MainMenuItem;
 import ru.skysoftlab.skylibs.web.annatations.MenuItemView;
 import ru.skysoftlab.skylibs.web.ui.views.UserView;
-import ru.skysoftlab.test.web.web.MainMenu;
-import ru.skysoftlab.test.web.web.MainMenu.ConfigMenu;
+import ${package}.web.MainMenu;
+import ${package}.web.MainMenu.ConfigMenu;
 
 import com.vaadin.cdi.CDIView;
 

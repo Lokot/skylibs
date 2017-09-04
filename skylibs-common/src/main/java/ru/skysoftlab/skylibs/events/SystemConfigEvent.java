@@ -20,6 +20,7 @@ public class SystemConfigEvent {
 		return params;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> T getParam(String key) {
 		return (T) getParams().get(key);
 	}

@@ -15,7 +15,6 @@ import org.apache.openejb.core.security.jaas.LoginProvider;
 import ru.skysoftlab.skylibs.security.entitys.UserEntity;
 
 @Alternative
-@SuppressWarnings("cdi-ambiguous-dependency")
 public class JpaLoginProvider implements LoginProvider {
 
 	

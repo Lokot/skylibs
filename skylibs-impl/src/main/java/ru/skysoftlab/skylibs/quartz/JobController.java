@@ -64,6 +64,7 @@ public abstract class JobController {
 	 */
 	protected abstract void startJobs();
 
+	@SuppressWarnings("unused")
 	private Set<? extends Trigger> newHashSet(Trigger... trigger) {
 		Set<Trigger> set = new HashSet<>();
 		for (Trigger t : trigger) {

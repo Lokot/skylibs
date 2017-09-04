@@ -22,7 +22,7 @@ import com.vaadin.data.Container.Indexed;
  *
  */
 @RolesAllowed({ RolesList.ADMIN })
-public class UserView extends AbstractGridView<UserEntity, UserForm> {
+public abstract class UserView extends AbstractGridView<UserEntity, UserForm> {
 
 	private static final long serialVersionUID = 6698245813955647506L;
 
