@@ -3,9 +3,6 @@ package ru.skysoftlab.skylibs.web.ui.views;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 
-import ru.skysoftlab.skylibs.web.navigation.NavigationEvent;
-import ru.skysoftlab.skylibs.web.navigation.NavigationService;
-
 import com.vaadin.cdi.CDIView;
 import com.vaadin.cdi.access.JaasAccessControl;
 import com.vaadin.navigator.View;
@@ -15,13 +12,15 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
+
+import ru.skysoftlab.skylibs.web.navigation.NavigationEvent;
+import ru.skysoftlab.skylibs.web.navigation.NavigationService;
 
 /**
  * Страница аутентификации.
@@ -56,9 +55,7 @@ public class LoginView extends CustomComponent implements View,
 		password.setValue("");
 		password.setNullRepresentation("");
 
-		VerticalLayout fields = new VerticalLayout(user, password, loginButton,
-				new Label("Username/password for admin: admin/admin"),
-				new Label("and for simple user: user/user"));
+		VerticalLayout fields = new VerticalLayout(user, password, loginButton);
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));
 		fields.setSizeUndefined();

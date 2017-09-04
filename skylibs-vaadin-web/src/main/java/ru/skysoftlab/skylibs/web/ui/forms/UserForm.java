@@ -20,6 +20,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
 /**
@@ -35,13 +36,13 @@ public class UserForm extends AbstractForm<UserEntity> {
 
 	private TextField name;
 	private ComboBox role;
-	private TextField pass1;
-	private TextField pass2;
+	private PasswordField pass1;
+	private PasswordField pass2;
 
 	@Override
 	protected Collection<? extends Component> getInputs() {
 		name = new TextField("Имя пользователя");
-		pass1 = new TextField("Пароль");
+		pass1 = new PasswordField("Пароль");
 		pass1.addValidator(new Validator() {
 
 			private static final long serialVersionUID = -6379090040805784482L;
@@ -53,7 +54,7 @@ public class UserForm extends AbstractForm<UserEntity> {
 				}
 			}
 		});
-		pass2 = new TextField("Подтверждение пароля");
+		pass2 = new PasswordField("Подтверждение пароля");
 		pass2.addValidator(new Validator() {
 
 			private static final long serialVersionUID = -3670054451052786950L;
