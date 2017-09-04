@@ -94,11 +94,15 @@ public abstract class AbstractForm<T> extends FormLayout {
 					gridView.getJpaContainer().addEntity(entity);
 
 					String msg = String
-							.format("Saved '%s'.", entity.toString());
+							.format("Сохранено '%s'.", entity.toString());
 					Notification.show(msg, Type.TRAY_NOTIFICATION);
 					gridView.refreshData();
 				} catch (FieldGroup.CommitException e) {
 					// Validation exceptions could be shown here
+				} catch (javax.persistence.PersistenceException e) {
+					String msg = String
+							.format("Ошибка сохранения '%s'.", entity.toString());
+					Notification.show(msg, Type.ERROR_MESSAGE);
 				}
 			}
 		};

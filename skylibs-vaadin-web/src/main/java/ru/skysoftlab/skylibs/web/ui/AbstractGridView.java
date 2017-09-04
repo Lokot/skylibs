@@ -54,6 +54,7 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 	private TextField filter = new TextField();
 	private Grid grid = new Grid();
 	private Button newEntityButton = new Button(getNewButtonLabel());
+	private Button deleteEntityButton = new Button(getDelButtonLabel());
 
 	public AbstractGridView(Class<T> clazz) {
 		super();
@@ -96,6 +97,21 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 				}
 			}
 		});
+		
+		deleteEntityButton.setVisible(false);
+		deleteEntityButton.addClickListener(new Button.ClickListener() {
+
+			private static final long serialVersionUID = -7453334107338210000L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				Object itemId = grid.getSelectedRow();
+				if (itemId != null) {
+					jpaContainer.removeItem(itemId);
+					refreshData();
+				}
+			}
+		});
 
 		filter.setInputPrompt("Фильтр...");
 		filter.addTextChangeListener(new TextChangeListener() {
@@ -129,8 +145,10 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 				if (itemId != null) {
 					getEntityForm().edit(
 							jpaContainer.getItem(itemId).getEntity());
+					deleteEntityButton.setVisible(true);
 				} else {
 					getEntityForm().edit(null);
+					deleteEntityButton.setVisible(false);
 				}
 			}
 		});
@@ -148,7 +166,7 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 	 */
 	@Override
 	protected void buildLayout() {
-		HorizontalLayout actions = new HorizontalLayout(filter, newEntityButton);
+		HorizontalLayout actions = new HorizontalLayout(filter, newEntityButton, deleteEntityButton);
 		actions.setSpacing(true);
 		actions.setMargin(new MarginInfo(true, true, true, false));
 		actions.setSizeUndefined();
@@ -176,6 +194,7 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 	public void refreshData() {
 		grid.setContainerDataSource(refreshData(filter.getValue()));
 		getEntityForm().setVisible(false);
+		deleteEntityButton.setVisible(false);
 	}
 
 	public JPAContainer<T> getJpaContainer() {
@@ -193,6 +212,8 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 	protected abstract Map<String, String> getColumnsNames();
 
 	protected abstract String getNewButtonLabel();
+	
+	protected abstract String getDelButtonLabel();
 
 	/**
 	 * Колонки для скрытия.

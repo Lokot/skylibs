@@ -104,6 +104,10 @@ public class UserForm extends AbstractForm<UserEntity> {
 					e.printStackTrace();
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
+				} catch (javax.persistence.PersistenceException e) {
+					String msg = String
+							.format("Ошибка сохранения '%s'.", entity.toString());
+					Notification.show(msg, Type.ERROR_MESSAGE);
 				}
 			}
 		};

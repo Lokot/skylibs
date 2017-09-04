@@ -40,6 +40,11 @@ public abstract class UserView extends AbstractGridView<UserEntity, UserForm> {
 	protected String getNewButtonLabel() {
 		return "Новый пользователь";
 	}
+	
+	@Override
+	protected String getDelButtonLabel() {
+		return "Удалить пользователя";
+	}
 
 	@Override
 	protected Object[] getRemoveColumn() {
