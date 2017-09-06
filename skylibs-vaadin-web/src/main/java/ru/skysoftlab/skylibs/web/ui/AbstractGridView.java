@@ -1,5 +1,6 @@
 package ru.skysoftlab.skylibs.web.ui;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -52,13 +53,25 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 	private JPAContainer<T> jpaContainer;
 
 	private TextField filter = new TextField();
-	private Grid grid = new Grid();
+	protected Grid grid;
 	private Button newEntityButton = new Button(getNewButtonLabel());
 	private Button deleteEntityButton = new Button(getDelButtonLabel());
 
 	public AbstractGridView(Class<T> clazz) {
 		super();
+		init(clazz, new Locale("ru"));
+	}
+	
+	public AbstractGridView(Class<T> clazz, Locale locale) {
+		super();
+		init(clazz, locale);
+	}
+	
+	private void init(Class<T> clazz, Locale locale) {
 		this.clazz = clazz;
+		grid = new Grid();
+		grid.setLocale(locale);
+		setLocale(locale);
 	}
 
 	@Override
@@ -152,7 +165,15 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 				}
 			}
 		});
+		configureGrid();
 		refreshData();
+	}
+
+	/**
+	 * Конфигурируется грид, если надо.
+	 */
+	protected void configureGrid() {
+		// TODO Auto-generated method stub
 	}
 
 	protected abstract F getEntityForm();
