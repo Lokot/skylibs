@@ -11,14 +11,17 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "type"
+    "type",
+    "zoomType"
 })
 public class Chart implements Serializable
 {
 
     @JsonProperty("type")
     private String type;
-    private final static long serialVersionUID = -5757009756917398597L;
+    @JsonProperty("zoomType")
+    private String zoomType;
+    private final static long serialVersionUID = -1222739213931640156L;
 
     @JsonProperty("type")
     public String getType() {
@@ -35,6 +38,21 @@ public class Chart implements Serializable
         return this;
     }
 
+    @JsonProperty("zoomType")
+    public String getZoomType() {
+        return zoomType;
+    }
+
+    @JsonProperty("zoomType")
+    public void setZoomType(String zoomType) {
+        this.zoomType = zoomType;
+    }
+
+    public Chart withZoomType(String zoomType) {
+        this.zoomType = zoomType;
+        return this;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
@@ -42,7 +60,7 @@ public class Chart implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(type).toHashCode();
+        return new HashCodeBuilder().append(type).append(zoomType).toHashCode();
     }
 
     @Override
@@ -54,7 +72,7 @@ public class Chart implements Serializable
             return false;
         }
         Chart rhs = ((Chart) other);
-        return new EqualsBuilder().append(type, rhs.type).isEquals();
+        return new EqualsBuilder().append(type, rhs.type).append(zoomType, rhs.zoomType).isEquals();
     }
 
 }

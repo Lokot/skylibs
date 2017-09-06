@@ -13,14 +13,17 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "categories"
+    "categories",
+    "crosshair"
 })
-public class XAxis implements Serializable
+public class XAxi implements Serializable
 {
 
     @JsonProperty("categories")
     private List<String> categories = new ArrayList<String>();
-    private final static long serialVersionUID = 67184393187421586L;
+    @JsonProperty("crosshair")
+    private Boolean crosshair;
+    private final static long serialVersionUID = 4196953747859502459L;
 
     @JsonProperty("categories")
     public List<String> getCategories() {
@@ -32,8 +35,23 @@ public class XAxis implements Serializable
         this.categories = categories;
     }
 
-    public XAxis withCategories(List<String> categories) {
+    public XAxi withCategories(List<String> categories) {
         this.categories = categories;
+        return this;
+    }
+
+    @JsonProperty("crosshair")
+    public Boolean getCrosshair() {
+        return crosshair;
+    }
+
+    @JsonProperty("crosshair")
+    public void setCrosshair(Boolean crosshair) {
+        this.crosshair = crosshair;
+    }
+
+    public XAxi withCrosshair(Boolean crosshair) {
+        this.crosshair = crosshair;
         return this;
     }
 
@@ -44,7 +62,7 @@ public class XAxis implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(categories).toHashCode();
+        return new HashCodeBuilder().append(categories).append(crosshair).toHashCode();
     }
 
     @Override
@@ -52,11 +70,11 @@ public class XAxis implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof XAxis) == false) {
+        if ((other instanceof XAxi) == false) {
             return false;
         }
-        XAxis rhs = ((XAxis) other);
-        return new EqualsBuilder().append(categories, rhs.categories).isEquals();
+        XAxi rhs = ((XAxi) other);
+        return new EqualsBuilder().append(categories, rhs.categories).append(crosshair, rhs.crosshair).isEquals();
     }
 
 }

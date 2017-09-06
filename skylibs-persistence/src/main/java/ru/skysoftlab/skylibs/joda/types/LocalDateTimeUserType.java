@@ -1,23 +1,27 @@
-package ru.skysoftlab.skylibs.types;
-
-import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+package ru.skysoftlab.skylibs.joda.types;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.EnhancedUserType;
 
-public class LocalDateUserType implements EnhancedUserType, Serializable {
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 
-	private static final long serialVersionUID = 5692920885076824115L;
-	private static final int[] SQL_TYPES = new int[] { Types.BIGINT };
-	private DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Instant;
+import org.joda.time.LocalDateTime;
+
+import java.util.Date;
+
+public class LocalDateTimeUserType implements EnhancedUserType, Serializable {
+
+	private static final long serialVersionUID = 8008841901166096613L;
+
+	private static final int[] SQL_TYPES = new int[] { Types.TIMESTAMP };
 
 	@Override
 	public int[] sqlTypes() {
@@ -26,7 +30,7 @@ public class LocalDateUserType implements EnhancedUserType, Serializable {
 
 	@Override
 	public Class<?> returnedClass() {
-		return LocalDate.class;
+		return LocalDateTime.class;
 	}
 
 	@Override
@@ -37,8 +41,8 @@ public class LocalDateUserType implements EnhancedUserType, Serializable {
 		if (x == null || y == null) {
 			return false;
 		}
-		LocalDate dtx = (LocalDate) x;
-		LocalDate dty = (LocalDate) y;
+		LocalDateTime dtx = (LocalDateTime) x;
+		LocalDateTime dty = (LocalDateTime) y;
 		return dtx.equals(dty);
 	}
 
@@ -50,23 +54,24 @@ public class LocalDateUserType implements EnhancedUserType, Serializable {
 	@Override
 	public Object nullSafeGet(ResultSet resultSet, String[] names, SessionImplementor session, Object owner)
 			throws HibernateException, SQLException {
-		Object timestamp = StandardBasicTypes.LONG.nullSafeGet(resultSet, names, session, owner);
+		Object timestamp = StandardBasicTypes.TIMESTAMP.nullSafeGet(resultSet, names, session, owner);
 		if (timestamp == null) {
 			return null;
 		}
-		Long epochDay = (Long) timestamp;
-		return LocalDate.ofEpochDay(epochDay);
+		Date ts = (Date) timestamp;
+		return new LocalDateTime(ts.getTime(), DateTimeZone.getDefault());
 	}
 
 	@Override
 	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index, SessionImplementor session)
 			throws HibernateException, SQLException {
 		if (value == null) {
-			StandardBasicTypes.LONG.nullSafeSet(preparedStatement, null, index, session);
+			StandardBasicTypes.TIMESTAMP.nullSafeSet(preparedStatement, null, index, session);
 		} else {
-			LocalDate ld = ((LocalDate) value);
-			Long epochDay = ld.toEpochDay();
-			StandardBasicTypes.LONG.nullSafeSet(preparedStatement, epochDay, index, session);
+			LocalDateTime ldt = ((LocalDateTime) value);
+			Instant instant = ldt.toDateTime(DateTimeZone.getDefault()).toInstant();
+			Date timestamp = instant.toDate();
+			StandardBasicTypes.TIMESTAMP.nullSafeSet(preparedStatement, timestamp, index, session);
 		}
 	}
 
@@ -102,12 +107,12 @@ public class LocalDateUserType implements EnhancedUserType, Serializable {
 
 	@Override
 	public String toXMLString(Object object) {
-		return ((LocalDate) object).format(formatter);
+		return object.toString();
 	}
 
 	@Override
 	public Object fromXMLString(String string) {
-		return LocalDate.parse(string, formatter);
+		return new LocalDateTime(string);
 	}
 
 }

@@ -11,27 +11,27 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "line"
+    "color"
 })
-public class PlotOptions_ implements Serializable
+public class Style_ implements Serializable
 {
 
-    @JsonProperty("line")
-    private Line line;
-    private final static long serialVersionUID = 6766800427135557431L;
+    @JsonProperty("color")
+    private String color;
+    private final static long serialVersionUID = -884437883462843847L;
 
-    @JsonProperty("line")
-    public Line getLine() {
-        return line;
+    @JsonProperty("color")
+    public String getColor() {
+        return color;
     }
 
-    @JsonProperty("line")
-    public void setLine(Line line) {
-        this.line = line;
+    @JsonProperty("color")
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public PlotOptions_ withLine(Line line) {
-        this.line = line;
+    public Style_ withColor(String color) {
+        this.color = color;
         return this;
     }
 
@@ -42,7 +42,7 @@ public class PlotOptions_ implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(line).toHashCode();
+        return new HashCodeBuilder().append(color).toHashCode();
     }
 
     @Override
@@ -50,11 +50,11 @@ public class PlotOptions_ implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof PlotOptions_) == false) {
+        if ((other instanceof Style_) == false) {
             return false;
         }
-        PlotOptions_ rhs = ((PlotOptions_) other);
-        return new EqualsBuilder().append(line, rhs.line).isEquals();
+        Style_ rhs = ((Style_) other);
+        return new EqualsBuilder().append(color, rhs.color).isEquals();
     }
 
 }

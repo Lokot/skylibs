@@ -11,27 +11,27 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "text"
+    "color"
 })
-public class Title___ implements Serializable
+public class Style implements Serializable
 {
 
-    @JsonProperty("text")
-    private String text;
-    private final static long serialVersionUID = 4433789221988864416L;
+    @JsonProperty("color")
+    private String color;
+    private final static long serialVersionUID = 7036752603431738243L;
 
-    @JsonProperty("text")
-    public String getText() {
-        return text;
+    @JsonProperty("color")
+    public String getColor() {
+        return color;
     }
 
-    @JsonProperty("text")
-    public void setText(String text) {
-        this.text = text;
+    @JsonProperty("color")
+    public void setColor(String color) {
+        this.color = color;
     }
 
-    public Title___ withText(String text) {
-        this.text = text;
+    public Style withColor(String color) {
+        this.color = color;
         return this;
     }
 
@@ -42,7 +42,7 @@ public class Title___ implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(text).toHashCode();
+        return new HashCodeBuilder().append(color).toHashCode();
     }
 
     @Override
@@ -50,11 +50,11 @@ public class Title___ implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof Title___) == false) {
+        if ((other instanceof Style) == false) {
             return false;
         }
-        Title___ rhs = ((Title___) other);
-        return new EqualsBuilder().append(text, rhs.text).isEquals();
+        Style rhs = ((Style) other);
+        return new EqualsBuilder().append(color, rhs.color).isEquals();
     }
 
 }

@@ -23,6 +23,22 @@
                         }
                     },
                     "type": "object"
+                },
+                "line": {
+                    "properties": {
+                        "dataLabels": {
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "enableMouseTracking": {
+                            "type": "boolean"
+                        }
+                    },
+                    "type": "object"
                 }
             },
             "type": "object"

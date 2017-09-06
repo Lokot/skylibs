@@ -98,5 +98,6 @@
 		<module>skylibs-web-archetype</module>
 		<module>skylibs-hibernate</module>
 		<module>highcharts-json</module>
+		<module>skylibs-vaadin-highcharts</module>
 	</modules>
 </project>

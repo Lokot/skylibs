@@ -14,31 +14,37 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "chart",
+    "legend",
     "plotOptions",
     "series",
     "subtitle",
     "title",
+    "tooltip",
     "xAxis",
     "yAxis"
 })
-public class BasicLineWithDataLabels implements Serializable
+public class Base implements Serializable
 {
 
     @JsonProperty("chart")
     private Chart chart;
+    @JsonProperty("legend")
+    private Legend legend;
     @JsonProperty("plotOptions")
-    private PlotOptions_ plotOptions;
+    private PlotOptions plotOptions;
     @JsonProperty("series")
-    private List<Series__> series = new ArrayList<Series__>();
+    private List<Series_> series = new ArrayList<Series_>();
     @JsonProperty("subtitle")
-    private Subtitle_ subtitle;
+    private Subtitle subtitle;
     @JsonProperty("title")
-    private Title__ title;
+    private Title title;
+    @JsonProperty("tooltip")
+    private Tooltip_ tooltip;
     @JsonProperty("xAxis")
-    private XAxis xAxis;
+    private List<XAxi> xAxis = new ArrayList<XAxi>();
     @JsonProperty("yAxis")
-    private YAxis_ yAxis;
-    private final static long serialVersionUID = 2380315154058934176L;
+    private List<YAxi> yAxis = new ArrayList<YAxi>();
+    private final static long serialVersionUID = -2201630468444317528L;
 
     @JsonProperty("chart")
     public Chart getChart() {
@@ -50,97 +56,127 @@ public class BasicLineWithDataLabels implements Serializable
         this.chart = chart;
     }
 
-    public BasicLineWithDataLabels withChart(Chart chart) {
+    public Base withChart(Chart chart) {
         this.chart = chart;
         return this;
     }
 
+    @JsonProperty("legend")
+    public Legend getLegend() {
+        return legend;
+    }
+
+    @JsonProperty("legend")
+    public void setLegend(Legend legend) {
+        this.legend = legend;
+    }
+
+    public Base withLegend(Legend legend) {
+        this.legend = legend;
+        return this;
+    }
+
     @JsonProperty("plotOptions")
-    public PlotOptions_ getPlotOptions() {
+    public PlotOptions getPlotOptions() {
         return plotOptions;
     }
 
     @JsonProperty("plotOptions")
-    public void setPlotOptions(PlotOptions_ plotOptions) {
+    public void setPlotOptions(PlotOptions plotOptions) {
         this.plotOptions = plotOptions;
     }
 
-    public BasicLineWithDataLabels withPlotOptions(PlotOptions_ plotOptions) {
+    public Base withPlotOptions(PlotOptions plotOptions) {
         this.plotOptions = plotOptions;
         return this;
     }
 
     @JsonProperty("series")
-    public List<Series__> getSeries() {
+    public List<Series_> getSeries() {
         return series;
     }
 
     @JsonProperty("series")
-    public void setSeries(List<Series__> series) {
+    public void setSeries(List<Series_> series) {
         this.series = series;
     }
 
-    public BasicLineWithDataLabels withSeries(List<Series__> series) {
+    public Base withSeries(List<Series_> series) {
         this.series = series;
         return this;
     }
 
     @JsonProperty("subtitle")
-    public Subtitle_ getSubtitle() {
+    public Subtitle getSubtitle() {
         return subtitle;
     }
 
     @JsonProperty("subtitle")
-    public void setSubtitle(Subtitle_ subtitle) {
+    public void setSubtitle(Subtitle subtitle) {
         this.subtitle = subtitle;
     }
 
-    public BasicLineWithDataLabels withSubtitle(Subtitle_ subtitle) {
+    public Base withSubtitle(Subtitle subtitle) {
         this.subtitle = subtitle;
         return this;
     }
 
     @JsonProperty("title")
-    public Title__ getTitle() {
+    public Title getTitle() {
         return title;
     }
 
     @JsonProperty("title")
-    public void setTitle(Title__ title) {
+    public void setTitle(Title title) {
         this.title = title;
     }
 
-    public BasicLineWithDataLabels withTitle(Title__ title) {
+    public Base withTitle(Title title) {
         this.title = title;
         return this;
     }
 
+    @JsonProperty("tooltip")
+    public Tooltip_ getTooltip() {
+        return tooltip;
+    }
+
+    @JsonProperty("tooltip")
+    public void setTooltip(Tooltip_ tooltip) {
+        this.tooltip = tooltip;
+    }
+
+    public Base withTooltip(Tooltip_ tooltip) {
+        this.tooltip = tooltip;
+        return this;
+    }
+
     @JsonProperty("xAxis")
-    public XAxis getXAxis() {
+    public List<XAxi> getXAxis() {
         return xAxis;
     }
 
     @JsonProperty("xAxis")
-    public void setXAxis(XAxis xAxis) {
+    public void setXAxis(List<XAxi> xAxis) {
         this.xAxis = xAxis;
     }
 
-    public BasicLineWithDataLabels withXAxis(XAxis xAxis) {
+    public Base withXAxis(List<XAxi> xAxis) {
         this.xAxis = xAxis;
         return this;
     }
 
     @JsonProperty("yAxis")
-    public YAxis_ getYAxis() {
+    public List<YAxi> getYAxis() {
         return yAxis;
     }
 
     @JsonProperty("yAxis")
-    public void setYAxis(YAxis_ yAxis) {
+    public void setYAxis(List<YAxi> yAxis) {
         this.yAxis = yAxis;
     }
 
-    public BasicLineWithDataLabels withYAxis(YAxis_ yAxis) {
+    public Base withYAxis(List<YAxi> yAxis) {
         this.yAxis = yAxis;
         return this;
     }
@@ -152,7 +188,7 @@ public class BasicLineWithDataLabels implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(chart).append(plotOptions).append(series).append(subtitle).append(title).append(xAxis).append(yAxis).toHashCode();
+        return new HashCodeBuilder().append(chart).append(legend).append(plotOptions).append(series).append(subtitle).append(title).append(tooltip).append(xAxis).append(yAxis).toHashCode();
     }
 
     @Override
@@ -160,11 +196,11 @@ public class BasicLineWithDataLabels implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof BasicLineWithDataLabels) == false) {
+        if ((other instanceof Base) == false) {
             return false;
         }
-        BasicLineWithDataLabels rhs = ((BasicLineWithDataLabels) other);
-        return new EqualsBuilder().append(chart, rhs.chart).append(plotOptions, rhs.plotOptions).append(series, rhs.series).append(subtitle, rhs.subtitle).append(title, rhs.title).append(xAxis, rhs.xAxis).append(yAxis, rhs.yAxis).isEquals();
+        Base rhs = ((Base) other);
+        return new EqualsBuilder().append(chart, rhs.chart).append(legend, rhs.legend).append(plotOptions, rhs.plotOptions).append(series, rhs.series).append(subtitle, rhs.subtitle).append(title, rhs.title).append(tooltip, rhs.tooltip).append(xAxis, rhs.xAxis).append(yAxis, rhs.yAxis).isEquals();
     }
 
 }

@@ -14,28 +14,37 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "data",
-    "name"
+    "name",
+    "tooltip",
+    "type",
+    "yAxis"
 })
 public class Series_ implements Serializable
 {
 
     @JsonProperty("data")
-    private List<Integer> data = new ArrayList<Integer>();
+    private List<Double> data = new ArrayList<Double>();
     @JsonProperty("name")
     private String name;
-    private final static long serialVersionUID = -1005038471324309572L;
+    @JsonProperty("tooltip")
+    private Tooltip tooltip;
+    @JsonProperty("type")
+    private String type;
+    @JsonProperty("yAxis")
+    private Integer yAxis;
+    private final static long serialVersionUID = 11842444378089954L;
 
     @JsonProperty("data")
-    public List<Integer> getData() {
+    public List<Double> getData() {
         return data;
     }
 
     @JsonProperty("data")
-    public void setData(List<Integer> data) {
+    public void setData(List<Double> data) {
         this.data = data;
     }
 
-    public Series_ withData(List<Integer> data) {
+    public Series_ withData(List<Double> data) {
         this.data = data;
         return this;
     }
@@ -55,6 +64,51 @@ public class Series_ implements Serializable
         return this;
     }
 
+    @JsonProperty("tooltip")
+    public Tooltip getTooltip() {
+        return tooltip;
+    }
+
+    @JsonProperty("tooltip")
+    public void setTooltip(Tooltip tooltip) {
+        this.tooltip = tooltip;
+    }
+
+    public Series_ withTooltip(Tooltip tooltip) {
+        this.tooltip = tooltip;
+        return this;
+    }
+
+    @JsonProperty("type")
+    public String getType() {
+        return type;
+    }
+
+    @JsonProperty("type")
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Series_ withType(String type) {
+        this.type = type;
+        return this;
+    }
+
+    @JsonProperty("yAxis")
+    public Integer getYAxis() {
+        return yAxis;
+    }
+
+    @JsonProperty("yAxis")
+    public void setYAxis(Integer yAxis) {
+        this.yAxis = yAxis;
+    }
+
+    public Series_ withYAxis(Integer yAxis) {
+        this.yAxis = yAxis;
+        return this;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
@@ -62,7 +116,7 @@ public class Series_ implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(data).append(name).toHashCode();
+        return new HashCodeBuilder().append(data).append(name).append(tooltip).append(type).append(yAxis).toHashCode();
     }
 
     @Override
@@ -74,7 +128,7 @@ public class Series_ implements Serializable
             return false;
         }
         Series_ rhs = ((Series_) other);
-        return new EqualsBuilder().append(data, rhs.data).append(name, rhs.name).isEquals();
+        return new EqualsBuilder().append(data, rhs.data).append(name, rhs.name).append(tooltip, rhs.tooltip).append(type, rhs.type).append(yAxis, rhs.yAxis).isEquals();
     }
 
 }

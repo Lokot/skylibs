@@ -21,6 +21,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>ru.skysoftlab.skylibs</groupId>
+			<artifactId>skylibs-vaadin-highcharts</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ru.skysoftlab.skylibs</groupId>
 			<artifactId>skylibs-persistence</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -69,12 +74,6 @@
 			<groupId>org.vaadin.teemu</groupId>
 			<artifactId>switch</artifactId>
 			<version>2.0.3</version>
-		</dependency>
-		<dependency>
-			<groupId>at.downdrown.vaadinaddons</groupId>
-			<artifactId>highchartsapi</artifactId>
-			<version>2.2.1-QF</version>
-			<!-- <version>2.2.1</version> -->
 		</dependency>
 		<dependency>
 			<groupId>ru.skysoftlab</groupId>

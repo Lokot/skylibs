@@ -11,14 +11,32 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+    "line",
     "series"
 })
 public class PlotOptions implements Serializable
 {
 
+    @JsonProperty("line")
+    private Line line;
     @JsonProperty("series")
     private Series series;
-    private final static long serialVersionUID = 6204375343241429241L;
+    private final static long serialVersionUID = -1267275120050335389L;
+
+    @JsonProperty("line")
+    public Line getLine() {
+        return line;
+    }
+
+    @JsonProperty("line")
+    public void setLine(Line line) {
+        this.line = line;
+    }
+
+    public PlotOptions withLine(Line line) {
+        this.line = line;
+        return this;
+    }
 
     @JsonProperty("series")
     public Series getSeries() {
@@ -42,7 +60,7 @@ public class PlotOptions implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(series).toHashCode();
+        return new HashCodeBuilder().append(line).append(series).toHashCode();
     }
 
     @Override
@@ -54,7 +72,7 @@ public class PlotOptions implements Serializable
             return false;
         }
         PlotOptions rhs = ((PlotOptions) other);
-        return new EqualsBuilder().append(series, rhs.series).isEquals();
+        return new EqualsBuilder().append(line, rhs.line).append(series, rhs.series).isEquals();
     }
 
 }

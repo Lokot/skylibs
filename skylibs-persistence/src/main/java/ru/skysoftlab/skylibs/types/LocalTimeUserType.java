@@ -5,25 +5,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Date;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.EnhancedUserType;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 
 public class LocalTimeUserType implements EnhancedUserType, Serializable {
 
-	private static final long serialVersionUID = -4254264242157164591L;
-	private static final int[] SQL_TYPES = new int[] { Types.TIME };
-	private static final int A_YEAR = 2000;
-	private static final int A_MONTH = 1;
-	private static final int A_DAY = 1;
+	private static final long serialVersionUID = 6270766555350460076L;
+	private static final int[] SQL_TYPES = new int[] { Types.BIGINT };
+	private DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_TIME;
 
 	@Override
 	public int[] sqlTypes() {
@@ -56,25 +50,23 @@ public class LocalTimeUserType implements EnhancedUserType, Serializable {
 	@Override
 	public Object nullSafeGet(ResultSet resultSet, String[] names, SessionImplementor session, Object owner)
 			throws HibernateException, SQLException {
-		Object timestamp = StandardBasicTypes.TIME.nullSafeGet(resultSet, names, session, owner);
+		Object timestamp = StandardBasicTypes.LONG.nullSafeGet(resultSet, names, session, owner);
 		if (timestamp == null) {
 			return null;
 		}
-		Date time = (Date) timestamp;
-		return new LocalDateTime(time.getTime(), DateTimeZone.getDefault()).toLocalTime();
+		Long nanoOfDay = (Long) timestamp;
+		return LocalTime.ofNanoOfDay(nanoOfDay);
 	}
 
 	@Override
 	public void nullSafeSet(PreparedStatement preparedStatement, Object value, int index, SessionImplementor session)
 			throws HibernateException, SQLException {
 		if (value == null) {
-			StandardBasicTypes.TIME.nullSafeSet(preparedStatement, null, index, session);
+			StandardBasicTypes.LONG.nullSafeSet(preparedStatement, null, index, session);
 		} else {
 			LocalTime lt = ((LocalTime) value);
-			Instant instant = new LocalDate(A_YEAR, A_MONTH, A_DAY).toDateTime(lt)
-					.toDateTime(DateTimeZone.getDefault()).toInstant();
-			Date time = instant.toDate();
-			StandardBasicTypes.TIME.nullSafeSet(preparedStatement, time, index, session);
+			Long nanoOfDay = lt.toNanoOfDay();
+			StandardBasicTypes.LONG.nullSafeSet(preparedStatement, nanoOfDay, index, session);
 		}
 	}
 
@@ -110,12 +102,12 @@ public class LocalTimeUserType implements EnhancedUserType, Serializable {
 
 	@Override
 	public String toXMLString(Object object) {
-		return object.toString();
+		return ((LocalTime) object).format(formatter);
 	}
 
 	@Override
 	public Object fromXMLString(String string) {
-		return new LocalTime(string);
+		return LocalTime.parse(string, formatter);
 	}
 
 }

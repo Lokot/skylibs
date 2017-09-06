@@ -5,12 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.Duration;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.joda.time.Duration;
 
 public class DurationUserType implements UserType, Serializable {
 
@@ -53,7 +53,7 @@ public class DurationUserType implements UserType, Serializable {
 		if (duration == null) {
 			return null;
 		}
-		return new Duration((Long) duration);
+		return Duration.ofMillis((Long) duration);
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class DurationUserType implements UserType, Serializable {
 			StandardBasicTypes.LONG.nullSafeSet(preparedStatement, null, index, session);
 		} else {
 			Duration duration = ((Duration) value);
-			StandardBasicTypes.LONG.nullSafeSet(preparedStatement, duration.getMillis(), index, session);
+			StandardBasicTypes.LONG.nullSafeSet(preparedStatement, duration.toMillis(), index, session);
 		}
 	}
 

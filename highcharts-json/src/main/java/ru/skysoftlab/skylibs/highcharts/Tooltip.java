@@ -11,27 +11,27 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "title"
+    "valueSuffix"
 })
-public class YAxis implements Serializable
+public class Tooltip implements Serializable
 {
 
-    @JsonProperty("title")
-    private Title_ title;
-    private final static long serialVersionUID = -2883466360150987375L;
+    @JsonProperty("valueSuffix")
+    private String valueSuffix;
+    private final static long serialVersionUID = 122483174149874694L;
 
-    @JsonProperty("title")
-    public Title_ getTitle() {
-        return title;
+    @JsonProperty("valueSuffix")
+    public String getValueSuffix() {
+        return valueSuffix;
     }
 
-    @JsonProperty("title")
-    public void setTitle(Title_ title) {
-        this.title = title;
+    @JsonProperty("valueSuffix")
+    public void setValueSuffix(String valueSuffix) {
+        this.valueSuffix = valueSuffix;
     }
 
-    public YAxis withTitle(Title_ title) {
-        this.title = title;
+    public Tooltip withValueSuffix(String valueSuffix) {
+        this.valueSuffix = valueSuffix;
         return this;
     }
 
@@ -42,7 +42,7 @@ public class YAxis implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(title).toHashCode();
+        return new HashCodeBuilder().append(valueSuffix).toHashCode();
     }
 
     @Override
@@ -50,11 +50,11 @@ public class YAxis implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof YAxis) == false) {
+        if ((other instanceof Tooltip) == false) {
             return false;
         }
-        YAxis rhs = ((YAxis) other);
-        return new EqualsBuilder().append(title, rhs.title).isEquals();
+        Tooltip rhs = ((Tooltip) other);
+        return new EqualsBuilder().append(valueSuffix, rhs.valueSuffix).isEquals();
     }
 
 }

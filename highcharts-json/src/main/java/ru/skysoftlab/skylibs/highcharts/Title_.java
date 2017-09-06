@@ -11,14 +11,32 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+    "style",
     "text"
 })
 public class Title_ implements Serializable
 {
 
+    @JsonProperty("style")
+    private Style_ style;
     @JsonProperty("text")
     private String text;
-    private final static long serialVersionUID = 9130050327640443226L;
+    private final static long serialVersionUID = -7306556071834763294L;
+
+    @JsonProperty("style")
+    public Style_ getStyle() {
+        return style;
+    }
+
+    @JsonProperty("style")
+    public void setStyle(Style_ style) {
+        this.style = style;
+    }
+
+    public Title_ withStyle(Style_ style) {
+        this.style = style;
+        return this;
+    }
 
     @JsonProperty("text")
     public String getText() {
@@ -42,7 +60,7 @@ public class Title_ implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(text).toHashCode();
+        return new HashCodeBuilder().append(style).append(text).toHashCode();
     }
 
     @Override
@@ -54,7 +72,7 @@ public class Title_ implements Serializable
             return false;
         }
         Title_ rhs = ((Title_) other);
-        return new EqualsBuilder().append(text, rhs.text).isEquals();
+        return new EqualsBuilder().append(style, rhs.style).append(text, rhs.text).isEquals();
     }
 
 }

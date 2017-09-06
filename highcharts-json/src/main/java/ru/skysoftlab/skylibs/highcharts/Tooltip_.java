@@ -11,27 +11,27 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "title"
+    "shared"
 })
-public class YAxis_ implements Serializable
+public class Tooltip_ implements Serializable
 {
 
-    @JsonProperty("title")
-    private Title___ title;
-    private final static long serialVersionUID = 2846849549216734625L;
+    @JsonProperty("shared")
+    private Boolean shared;
+    private final static long serialVersionUID = -4496098827841628890L;
 
-    @JsonProperty("title")
-    public Title___ getTitle() {
-        return title;
+    @JsonProperty("shared")
+    public Boolean getShared() {
+        return shared;
     }
 
-    @JsonProperty("title")
-    public void setTitle(Title___ title) {
-        this.title = title;
+    @JsonProperty("shared")
+    public void setShared(Boolean shared) {
+        this.shared = shared;
     }
 
-    public YAxis_ withTitle(Title___ title) {
-        this.title = title;
+    public Tooltip_ withShared(Boolean shared) {
+        this.shared = shared;
         return this;
     }
 
@@ -42,7 +42,7 @@ public class YAxis_ implements Serializable
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(title).toHashCode();
+        return new HashCodeBuilder().append(shared).toHashCode();
     }
 
     @Override
@@ -50,11 +50,11 @@ public class YAxis_ implements Serializable
         if (other == this) {
             return true;
         }
-        if ((other instanceof YAxis_) == false) {
+        if ((other instanceof Tooltip_) == false) {
             return false;
         }
-        YAxis_ rhs = ((YAxis_) other);
-        return new EqualsBuilder().append(title, rhs.title).isEquals();
+        Tooltip_ rhs = ((Tooltip_) other);
+        return new EqualsBuilder().append(shared, rhs.shared).isEquals();
     }
 
 }
