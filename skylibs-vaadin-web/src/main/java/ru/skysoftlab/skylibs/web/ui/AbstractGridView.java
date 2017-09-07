@@ -1,5 +1,7 @@
 package ru.skysoftlab.skylibs.web.ui;
 
+import static ru.skysoftlab.skylibs.common.EditableEntityState.DELETE;
+
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,6 +31,9 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import ru.skysoftlab.skylibs.common.EditableEntity;
+import ru.skysoftlab.skylibs.events.EntityChangeEvent;
+
 /**
  * Вид с гридом и формой ввода.
  * 
@@ -41,10 +46,13 @@ import com.vaadin.ui.VerticalLayout;
  * @param <P>
  *            провайдер
  */
-public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
-		BaseMenuView {
+@SuppressWarnings("rawtypes")
+public abstract class AbstractGridView<T extends EditableEntity, F extends AbstractForm<T>> extends BaseMenuView {
 
 	private static final long serialVersionUID = 4734617922366685803L;
+	
+	@Inject
+	private javax.enterprise.event.Event<EntityChangeEvent> entityChangeEvent;
 
 	/** класс сущности */
 	private Class<T> clazz;
@@ -61,23 +69,25 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 		super();
 		init(clazz, new Locale("ru"));
 	}
-	
+
 	public AbstractGridView(Class<T> clazz, Locale locale) {
 		super();
 		init(clazz, locale);
 	}
-	
+
 	private void init(Class<T> clazz, Locale locale) {
 		this.clazz = clazz;
-		grid = new Grid();
-		grid.setLocale(locale);
 		setLocale(locale);
 	}
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		configureComponents();
-		buildLayout();
+		if (grid == null) {
+			configureComponents();
+			buildLayout();
+		} else {
+			refreshData();
+		}
 	}
 
 	/*
@@ -87,6 +97,8 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 	 */
 	@Override
 	protected void configureComponents() {
+		grid = new Grid();
+		grid.setLocale(getLocale());
 		try {
 			getEntityForm().setGridView(this);
 			// Create a persistent person container
@@ -110,7 +122,7 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 				}
 			}
 		});
-		
+
 		deleteEntityButton.setVisible(false);
 		deleteEntityButton.addClickListener(new Button.ClickListener() {
 
@@ -121,6 +133,8 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 				Object itemId = grid.getSelectedRow();
 				if (itemId != null) {
 					jpaContainer.removeItem(itemId);
+					// событие изменения настроек
+					entityChangeEvent.fire(new EntityChangeEvent(itemId, clazz, DELETE));
 					refreshData();
 				}
 			}
@@ -137,7 +151,6 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 			}
 		});
 
-		// TODO не понятно зачем это здесь
 		grid.setContainerDataSource(new BeanItemContainer<>(clazz));
 		grid.setColumnOrder(getColumnOrder());
 		for (Object columnId : getRemoveColumn()) {
@@ -156,8 +169,7 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 			public void select(SelectionEvent event) {
 				Object itemId = grid.getSelectedRow();
 				if (itemId != null) {
-					getEntityForm().edit(
-							jpaContainer.getItem(itemId).getEntity());
+					getEntityForm().edit(jpaContainer.getItem(itemId).getEntity());
 					deleteEntityButton.setVisible(true);
 				} else {
 					getEntityForm().edit(null);
@@ -173,7 +185,6 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 	 * Конфигурируется грид, если надо.
 	 */
 	protected void configureGrid() {
-		// TODO Auto-generated method stub
 	}
 
 	protected abstract F getEntityForm();
@@ -201,8 +212,7 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 		grid.setSizeFull();
 		left.setExpandRatio(grid, 1);
 
-		HorizontalLayout mainLayout = new HorizontalLayout(left,
-				getEntityForm());
+		HorizontalLayout mainLayout = new HorizontalLayout(left, getEntityForm());
 		mainLayout.setSizeFull();
 		mainLayout.setExpandRatio(left, 1);
 
@@ -233,7 +243,7 @@ public abstract class AbstractGridView<T, F extends AbstractForm<T>> extends
 	protected abstract Map<String, String> getColumnsNames();
 
 	protected abstract String getNewButtonLabel();
-	
+
 	protected abstract String getDelButtonLabel();
 
 	/**

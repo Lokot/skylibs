@@ -18,6 +18,6 @@ public interface ConfigurationListener {
 	 * @param event
 	 *            событие изменения системных настроек
 	 */
-	public void editIntervalEvent(@Observes SystemConfigEvent event);
+	public void configUpdated(@Observes SystemConfigEvent event);
 
 }

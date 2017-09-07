@@ -20,8 +20,7 @@ public class PropertiesLoginProvider implements LoginProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.apache.openejb.core.security.jaas.LoginProvider#authenticate(java
+	 * @see org.apache.openejb.core.security.jaas.LoginProvider#authenticate(java
 	 * .lang.String, java.lang.String)
 	 */
 	@Override
@@ -41,7 +40,9 @@ public class PropertiesLoginProvider implements LoginProvider {
 					return ADMIN.getRoles();
 				} else if ("user".equals(user)) {
 					return USER.getRoles();
-				} else {
+				}
+			} else {
+				if ("guest".equals(user)) {
 					return GUEST.getRoles();
 				}
 			}

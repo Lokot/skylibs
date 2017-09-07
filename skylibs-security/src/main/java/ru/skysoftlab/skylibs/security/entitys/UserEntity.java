@@ -1,7 +1,5 @@
 package ru.skysoftlab.skylibs.security.entitys;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,11 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import ru.skysoftlab.skylibs.common.EditableEntity;
 import ru.skysoftlab.skylibs.security.Roles;
 
 @Entity
 @NamedQueries({ @NamedQuery(name = "User.byName", query = "SELECT e FROM UserEntity e WHERE e.name=:name") })
-public class UserEntity implements Serializable {
+public class UserEntity implements EditableEntity<Long> {
 
 	private static final long serialVersionUID = -8557078263415603719L;
 
@@ -31,6 +30,7 @@ public class UserEntity implements Serializable {
 	@Column(nullable = false)
 	private Roles role;
 
+	@Override
 	public Long getId() {
 		return id;
 	}

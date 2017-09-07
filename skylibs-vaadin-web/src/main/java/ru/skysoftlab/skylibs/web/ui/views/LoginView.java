@@ -7,11 +7,16 @@ import com.vaadin.cdi.CDIView;
 import com.vaadin.cdi.access.JaasAccessControl;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Resource;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Image;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PasswordField;
@@ -29,8 +34,7 @@ import ru.skysoftlab.skylibs.web.navigation.NavigationService;
  *
  */
 @CDIView(NavigationService.LOGIN)
-public class LoginView extends CustomComponent implements View,
-		Button.ClickListener {
+public class LoginView extends CustomComponent implements View, Button.ClickListener {
 	private static final long serialVersionUID = 7457479619765665383L;
 
 	@Inject
@@ -39,11 +43,12 @@ public class LoginView extends CustomComponent implements View,
 	private TextField user = new TextField("Пользователь:");
 	private PasswordField password = new PasswordField("Пароль:");
 	private Button loginButton = new Button("Вход", this);
+	private Button guestButton = new Button("Гость", this);
 
 	@Override
 	public void enter(ViewChangeEvent event) {
 		getSession().setAttribute("user", null);
-		
+
 		setSizeFull();
 
 		user.setWidth("300px");
@@ -55,13 +60,25 @@ public class LoginView extends CustomComponent implements View,
 		password.setValue("");
 		password.setNullRepresentation("");
 
-		VerticalLayout fields = new VerticalLayout(user, password, loginButton);
+		HorizontalLayout buttonsLayout = new HorizontalLayout(loginButton, guestButton);
+
+		VerticalLayout fields = new VerticalLayout(user, password, buttonsLayout);
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));
 		fields.setSizeUndefined();
 
-		VerticalLayout viewLayout = new VerticalLayout(fields);
+		Resource res = new ThemeResource("img/logo.png");
+		Image image = new Image(null, res);
+		HorizontalLayout logoLayout = new HorizontalLayout(image);
+		Label appName = new Label(System.getProperty("appName", "App name"));
+		// .v-label-appNameLabel {
+		// font-size: 20px;
+		// }
+		appName.setStyleName("appNameLabel");
+
+		VerticalLayout viewLayout = new VerticalLayout(logoLayout, fields);
 		viewLayout.setSizeFull();
+		viewLayout.setComponentAlignment(logoLayout, Alignment.MIDDLE_CENTER);
 		viewLayout.setComponentAlignment(fields, Alignment.MIDDLE_CENTER);
 		viewLayout.setStyleName(Reindeer.LAYOUT_BLACK);
 		setCompositionRoot(viewLayout);
@@ -72,6 +89,9 @@ public class LoginView extends CustomComponent implements View,
 	public void buttonClick(ClickEvent event) {
 		String username = user.getValue();
 		String password = this.password.getValue();
+		if (event.getButton().equals(guestButton)) {
+			username = "guest";
+		}
 		try {
 			JaasAccessControl.login(username, password);
 			getSession().setAttribute("user", username);
