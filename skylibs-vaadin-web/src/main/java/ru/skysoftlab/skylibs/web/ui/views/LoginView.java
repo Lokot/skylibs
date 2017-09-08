@@ -24,6 +24,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
+import ru.skysoftlab.skylibs.web.common.AppNames;
 import ru.skysoftlab.skylibs.web.navigation.NavigationEvent;
 import ru.skysoftlab.skylibs.web.navigation.NavigationService;
 
@@ -62,24 +63,25 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 
 		HorizontalLayout buttonsLayout = new HorizontalLayout(loginButton, guestButton);
 
+		Resource res = new ThemeResource("img/logo.png");
+		Image image = new Image(null, res);
+		Label appName = new Label(System.getProperty(AppNames.APP_NAME, "App name"));
+		appName.setStyleName("appNameLabel");
+		appName.removeStyleName("v-widget");
+		
+		VerticalLayout logoLayout = new VerticalLayout(image, appName);
+		logoLayout.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
+		logoLayout.setComponentAlignment(appName, Alignment.MIDDLE_CENTER);
+		
 		VerticalLayout fields = new VerticalLayout(user, password, buttonsLayout);
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));
 		fields.setSizeUndefined();
 
-		Resource res = new ThemeResource("img/logo.png");
-		Image image = new Image(null, res);
-		HorizontalLayout logoLayout = new HorizontalLayout(image);
-		Label appName = new Label(System.getProperty("appName", "App name"));
-		// .v-label-appNameLabel {
-		// font-size: 20px;
-		// }
-		appName.setStyleName("appNameLabel");
-
 		VerticalLayout viewLayout = new VerticalLayout(logoLayout, fields);
 		viewLayout.setSizeFull();
-		viewLayout.setComponentAlignment(logoLayout, Alignment.MIDDLE_CENTER);
-		viewLayout.setComponentAlignment(fields, Alignment.MIDDLE_CENTER);
+		viewLayout.setComponentAlignment(logoLayout, Alignment.BOTTOM_CENTER);
+		viewLayout.setComponentAlignment(fields, Alignment.TOP_CENTER);
 		viewLayout.setStyleName(Reindeer.LAYOUT_BLACK);
 		setCompositionRoot(viewLayout);
 		user.focus();

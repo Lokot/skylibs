@@ -9,7 +9,7 @@ import com.vaadin.cdi.CDIUI;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
-@Theme("valo")
+@Theme("mytheme")
 @CDIUI("")
 @SimpleQualifier(MainVaadinUI.NAME)
 public class MainVaadinUI extends UI {
