@@ -99,5 +99,6 @@
 		<module>skylibs-hibernate</module>
 		
 		<module>skylibs-vaadin-highcharts</module>
+		<module>skylibs-gpio</module>
 	</modules>
 </project>
