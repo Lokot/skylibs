@@ -21,7 +21,8 @@ public class JpaLoginProvider implements LoginProvider {
 	@Inject
 	private EntityManager entityManager;
 	
-	private PropertiesLoginProvider propLoginProvider = new PropertiesLoginProvider();
+	@Inject
+	private PropertiesLoginProvider propLoginProvider;
 
 	/*
 	 * (non-Javadoc)
