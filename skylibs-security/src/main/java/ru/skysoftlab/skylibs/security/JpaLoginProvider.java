@@ -10,20 +10,15 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.security.auth.login.FailedLoginException;
 
-import org.apache.openejb.core.security.jaas.LoginProvider;
-
 import ru.skysoftlab.skylibs.security.entitys.UserEntity;
 
 @Alternative
-public class JpaLoginProvider implements LoginProvider {
+public class JpaLoginProvider extends PropertiesLoginProvider {
 
 	
 	@Inject
 	private EntityManager entityManager;
 	
-	@Inject
-	private PropertiesLoginProvider propLoginProvider;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -46,8 +41,9 @@ public class JpaLoginProvider implements LoginProvider {
 				e.printStackTrace();
 			}
 		} catch (NoResultException e) {
-			return propLoginProvider.authenticate(user, password);
+			return super.authenticate(user, password);
 		}
 		throw new FailedLoginException();
 	}
+	
 }

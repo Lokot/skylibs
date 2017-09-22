@@ -15,7 +15,7 @@ import org.apache.openejb.core.security.jaas.LoginProvider;
 
 import ru.skysoftlab.skylibs.annatations.AppPropertyFile;
 
-@Alternative
+@Alternative 
 public class PropertiesLoginProvider implements LoginProvider {
 
 	@Inject
