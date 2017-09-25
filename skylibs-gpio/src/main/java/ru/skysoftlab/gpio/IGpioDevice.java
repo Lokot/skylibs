@@ -18,4 +18,6 @@ public interface IGpioDevice extends IGpioDevicePinsPorts, Closeable {
 	
 	public boolean isConnected();
 	
+	public void fireDeviceConnectedEvent();
+	
 }

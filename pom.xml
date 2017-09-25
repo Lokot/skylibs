@@ -97,7 +97,7 @@
 		<module>skylibs-vaadin-web</module>
 		<module>skylibs-web-archetype</module>
 		<module>skylibs-hibernate</module>
-		
+		<module>skylibs-cdi-one-shot-scope-extension</module>
 		<module>skylibs-vaadin-highcharts</module>
 		<module>skylibs-gpio</module>
 	</modules>

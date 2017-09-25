@@ -20,14 +20,22 @@ public class VaadinUtils {
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 * @param cb
+	 */
+	public static void comboboxReadOnly(ComboBox cb) {
+		cb.setTextInputAllowed(false);
+		cb.setNullSelectionAllowed(false);
+	}
 
 	/**
 	 * 
 	 * @param cb
 	 */
 	public static void comboboxReadOnlyAndSelectFirst(ComboBox cb) {
-		cb.setTextInputAllowed(false);
-		cb.setNullSelectionAllowed(false);
+		comboboxReadOnly(cb);
 		selectFirst(cb);
 	}
 
