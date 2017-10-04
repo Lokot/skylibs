@@ -13,13 +13,12 @@ import org.slf4j.LoggerFactory;
 import ${package}.dto.SystemConfigDto;
 import ${package}.impl.DataBaseProvider;
 import ${package}.web.MainMenu;
+import ${package}.web.MainMenu.ConfigMenu;
 import ru.skysoftlab.skylibs.events.SystemConfigEvent;
 import ru.skysoftlab.skylibs.security.RolesList;
 import ru.skysoftlab.skylibs.web.annatations.MainMenuItem;
 import ru.skysoftlab.skylibs.web.annatations.MenuItemView;
 import ru.skysoftlab.skylibs.web.ui.BaseMenuView;
-import ru.skysoftlab.test.web.web.MainMenu;
-import ru.skysoftlab.test.web.web.MainMenu.ConfigMenu;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.Property.ValueChangeEvent;
