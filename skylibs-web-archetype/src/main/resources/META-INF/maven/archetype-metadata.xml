@@ -39,6 +39,7 @@
 			<directory>src/main/resources</directory>
 			<includes>
 				<include>**/*.config</include>
+				<include>**/*.properties</include>
 				<include>**/*.ViewsPackageSet</include>
 			</includes>
 		</fileSet>

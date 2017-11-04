@@ -6,6 +6,7 @@ package ${package}.web;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 
+import ru.skysoftlab.skylibs.web.common.AppNames;
 import ru.skysoftlab.skylibs.web.navigation.MainVaadinUI;
 
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -25,4 +26,8 @@ public class Servlet extends VaadinCDIServlet {
 
 	private static final long serialVersionUID = 2918754860952978590L;
 
+	public Servlet() {
+		System.setProperty(AppNames.APP_NAME, "${displayName}");
+	}
+	
 }
