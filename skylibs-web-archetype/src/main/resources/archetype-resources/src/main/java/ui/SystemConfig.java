@@ -3,6 +3,8 @@
 #set( $symbol_escape = '\' )
 package ${package}.ui;
 
+import java.util.Locale;
+
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -13,7 +15,8 @@ import org.slf4j.LoggerFactory;
 import ${package}.dto.SystemConfigDto;
 import ${package}.impl.DataBaseProvider;
 import ${package}.web.MainMenu;
-import ${package}.web.MainMenu.ConfigMenu;
+
+import ru.skysoftlab.crongen.ParseCronGenComponent;
 import ru.skysoftlab.skylibs.events.SystemConfigEvent;
 import ru.skysoftlab.skylibs.security.RolesList;
 import ru.skysoftlab.skylibs.web.annatations.MainMenuItem;
@@ -53,6 +56,8 @@ public class SystemConfig extends BaseMenuView implements Button.ClickListener,
 	private static final long serialVersionUID = 2039928987238266962L;
 
 	private Logger LOG = LoggerFactory.getLogger(SystemConfig.class);
+	
+	private final Locale ruLocale = new Locale("ru");
 
 	@Inject
 	private DataBaseProvider dataBaseProvider;
@@ -66,7 +71,7 @@ public class SystemConfig extends BaseMenuView implements Button.ClickListener,
 	@RequestScoped
 	private SystemConfigDto dto;
 
-	private TextField simpleProp = new TextField("Простое свойство:");
+	private ParseCronGenComponent simpleProp = new ParseCronGenComponent("Простое свойство:", ruLocale);
 
 	private Button save = new Button("Сохранить", this);
 

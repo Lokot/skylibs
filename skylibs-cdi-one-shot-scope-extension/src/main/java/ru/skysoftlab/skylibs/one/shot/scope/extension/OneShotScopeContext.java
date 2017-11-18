@@ -17,10 +17,10 @@ import ru.skysoftlab.skylibs.one.shot.scope.extension.OneShotScopeContextHolder.
 public class OneShotScopeContext implements Context, Serializable {
 
 	private static final long serialVersionUID = -3507195931382381471L;
-	
-	private Logger LOG = LoggerFactory.getLogger(OneShotScopeContext.class);
 
-	private OneShotScopeContextHolder customScopeContextHolder;
+	private final OneShotScopeContextHolder customScopeContextHolder;
+
+	private final Logger LOG = LoggerFactory.getLogger(OneShotScopeContext.class);
 
 	public OneShotScopeContext() {
 		LOG.info("Init");
@@ -38,7 +38,7 @@ public class OneShotScopeContext implements Context, Serializable {
 		if (customScopeContextHolder.getBeans().containsKey(bean.getBeanClass())) {
 			customScopeContextHolder.destroyBean(customScopeContextHolder.getBean(bean.getBeanClass()));
 		}
-		T t = (T) bean.create(creationalContext);
+		T t = bean.create(creationalContext);
 		CustomScopeInstance<T> customInstance = new CustomScopeInstance<>();
 		customInstance.bean = bean;
 		customInstance.ctx = creationalContext;
@@ -52,6 +52,7 @@ public class OneShotScopeContext implements Context, Serializable {
 		return OneShotScope.class;
 	}
 
+	@Override
 	public boolean isActive() {
 		return true;
 	}

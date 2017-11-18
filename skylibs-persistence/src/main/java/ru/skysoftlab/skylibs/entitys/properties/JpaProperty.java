@@ -6,26 +6,26 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import ru.skysoftlab.skylibs.common.EditableEntity;
 import ru.skysoftlab.skylibs.properties.IDbProperty;
 
 @Entity
-public class JpaProperty implements IDbProperty, Serializable {
+public class JpaProperty implements IDbProperty, EditableEntity<String>, Serializable {
 
 	private static final long serialVersionUID = -1284259336857932785L;
 
 	@Id
 	private String id;
-	private String value;
 	private String propertyType;
+	private String value;
 
 	@Override
 	public String getId() {
 		return id;
 	}
 
-	@Override
-	public String getValue() {
-		return value;
+	public String getPropertyType() {
+		return propertyType;
 	}
 
 	@Override
@@ -38,16 +38,17 @@ public class JpaProperty implements IDbProperty, Serializable {
 		}
 	}
 
-	public String getPropertyType() {
-		return propertyType;
-	}
-
-	public void setPropertyType(String propertyType) {
-		this.propertyType = propertyType;
+	@Override
+	public String getValue() {
+		return value;
 	}
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public void setPropertyType(String propertyType) {
+		this.propertyType = propertyType;
 	}
 
 	public void setValue(String value) {

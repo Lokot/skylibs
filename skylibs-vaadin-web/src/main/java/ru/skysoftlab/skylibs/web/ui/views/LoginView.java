@@ -38,13 +38,29 @@ import ru.skysoftlab.skylibs.web.navigation.NavigationService;
 public class LoginView extends CustomComponent implements View, Button.ClickListener {
 	private static final long serialVersionUID = 7457479619765665383L;
 
+	private Button guestButton = new Button("Гость", this);
+
+	private Button loginButton = new Button("Вход", this);
 	@Inject
 	private javax.enterprise.event.Event<NavigationEvent> navigationEvent;
-
-	private TextField user = new TextField("Пользователь:");
 	private PasswordField password = new PasswordField("Пароль:");
-	private Button loginButton = new Button("Вход", this);
-	private Button guestButton = new Button("Гость", this);
+	private TextField user = new TextField("Пользователь:");
+
+	@Override
+	public void buttonClick(ClickEvent event) {
+		String username = user.getValue();
+		String password = this.password.getValue();
+		if (event.getButton().equals(guestButton)) {
+			username = "guest";
+		}
+		try {
+			JaasAccessControl.login(username, password);
+			getSession().setAttribute("user", username);
+			navigationEvent.fire(new NavigationEvent(NavigationService.MAIN));
+		} catch (ServletException e) {
+			Notification.show(e.getMessage(), Type.TRAY_NOTIFICATION);
+		}
+	}
 
 	@Override
 	public void enter(ViewChangeEvent event) {
@@ -65,14 +81,16 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 
 		Resource res = new ThemeResource("img/logo.png");
 		Image image = new Image(null, res);
+		image.setStyleName("appLogo");
+
 		Label appName = new Label(System.getProperty(AppNames.APP_NAME, "App name"));
 		appName.setStyleName("appNameLabel");
 		appName.removeStyleName("v-widget");
-		
+
 		VerticalLayout logoLayout = new VerticalLayout(image, appName);
 		logoLayout.setComponentAlignment(image, Alignment.MIDDLE_CENTER);
 		logoLayout.setComponentAlignment(appName, Alignment.MIDDLE_CENTER);
-		
+
 		VerticalLayout fields = new VerticalLayout(user, password, buttonsLayout);
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));
@@ -85,21 +103,5 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 		viewLayout.setStyleName(Reindeer.LAYOUT_BLACK);
 		setCompositionRoot(viewLayout);
 		user.focus();
-	}
-
-	@Override
-	public void buttonClick(ClickEvent event) {
-		String username = user.getValue();
-		String password = this.password.getValue();
-		if (event.getButton().equals(guestButton)) {
-			username = "guest";
-		}
-		try {
-			JaasAccessControl.login(username, password);
-			getSession().setAttribute("user", username);
-			navigationEvent.fire(new NavigationEvent(NavigationService.MAIN));
-		} catch (ServletException e) {
-			Notification.show(e.getMessage(), Type.TRAY_NOTIFICATION);
-		}
 	}
 }

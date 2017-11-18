@@ -9,6 +9,10 @@
   @include valo;
 
   /* Insert your theme rules here */
+  .v-image-appLogo {
+  		max-height: 400px;
+  }
+  
   .v-label-appNameLabel {
 	  	font-size: 25px; 
   		text-align: center;
