@@ -10,7 +10,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.joda.time.Duration;
 
 import ru.skysoftlab.gpio.DigitalPin;
 
@@ -21,13 +20,18 @@ public class PinDbType implements UserType, Serializable {
 	private static final int[] SQL_TYPES = new int[] { Types.VARCHAR };
 
 	@Override
-	public int[] sqlTypes() {
-		return SQL_TYPES;
+	public Object assemble(Serializable cached, Object value) throws HibernateException {
+		return cached;
 	}
 
 	@Override
-	public Class<?> returnedClass() {
-		return DigitalPin.class;
+	public Object deepCopy(Object value) throws HibernateException {
+		return value;
+	}
+
+	@Override
+	public Serializable disassemble(Object value) throws HibernateException {
+		return (Serializable) value;
 	}
 
 	@Override
@@ -38,14 +42,19 @@ public class PinDbType implements UserType, Serializable {
 		if (x == null || y == null) {
 			return false;
 		}
-		Duration dtx = (Duration) x;
-		Duration dty = (Duration) y;
+		DigitalPin dtx = (DigitalPin) x;
+		DigitalPin dty = (DigitalPin) y;
 		return dtx.equals(dty);
 	}
 
 	@Override
 	public int hashCode(Object object) throws HibernateException {
 		return object.hashCode();
+	}
+
+	@Override
+	public boolean isMutable() {
+		return false;
 	}
 
 	@Override
@@ -70,28 +79,18 @@ public class PinDbType implements UserType, Serializable {
 	}
 
 	@Override
-	public Object deepCopy(Object value) throws HibernateException {
-		return value;
-	}
-
-	@Override
-	public boolean isMutable() {
-		return false;
-	}
-
-	@Override
-	public Serializable disassemble(Object value) throws HibernateException {
-		return (Serializable) value;
-	}
-
-	@Override
-	public Object assemble(Serializable cached, Object value) throws HibernateException {
-		return cached;
-	}
-
-	@Override
 	public Object replace(Object original, Object target, Object owner) throws HibernateException {
 		return original;
+	}
+
+	@Override
+	public Class<?> returnedClass() {
+		return DigitalPin.class;
+	}
+
+	@Override
+	public int[] sqlTypes() {
+		return SQL_TYPES;
 	}
 
 }

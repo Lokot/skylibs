@@ -37,87 +37,15 @@ import org.slf4j.LoggerFactory;
 // @Singleton
 public abstract class JobController {
 
+	@Inject
+	private CdiJobFactory jobFactory;
+
 	private Logger LOG = LoggerFactory.getLogger(JobController.class);
 
 	@Resource(lookup = "java:openejb/Resource/QuartzResourceAdapter")
 	private QuartzResourceAdapter ra;
 
-	@Inject
-	private CdiJobFactory jobFactory;
-
 	private Scheduler scheduler;
-
-	@PostConstruct
-	public void scheduleJobs() {
-		scheduler = ra.getScheduler();
-		try {
-			getScheduler().setJobFactory(jobFactory);
-			getScheduler().start();
-		} catch (SchedulerException e) {
-			LOG.error("Error while creating scheduler", e);
-		}
-		startJobs();
-	}
-
-	/**
-	 * Запуск заданий.
-	 */
-	protected abstract void startJobs();
-
-	@SuppressWarnings("unused")
-	private Set<? extends Trigger> newHashSet(Trigger... trigger) {
-		Set<Trigger> set = new HashSet<>();
-		for (Trigger t : trigger) {
-			set.add(t);
-		}
-		return set;
-	}
-
-	@PreDestroy
-	public void stopJobs() {
-		if (getScheduler() != null) {
-			try {
-				getScheduler().shutdown(false);
-			} catch (SchedulerException e) {
-				LOG.error("Error while closing scheduler", e);
-			}
-		}
-	}
-
-	/**
-	 * Перезапуск задания.
-	 * 
-	 * @param key
-	 * @param cronString
-	 * @throws SchedulerException
-	 */
-	protected void rescheduleJobNow(TriggerKey key, String cronString) throws SchedulerException {
-		Trigger trigger = createCronTrigger(key, cronString, null);
-		getScheduler().rescheduleJob(key, trigger);
-		LOG.debug("RescheduleJob " + key + " = " + cronString);
-	}
-
-	/**
-	 * Останавливает задачу.
-	 * 
-	 * @param key
-	 * @throws SchedulerException
-	 */
-	protected void resumeJobNow(JobKey key) throws SchedulerException {
-		getScheduler().resumeJob(key);
-		LOG.debug("ResumeJob " + key);
-	}
-
-	/**
-	 * Ударяет задачу.
-	 * 
-	 * @param key
-	 * @throws SchedulerException
-	 */
-	protected void deleteJobNow(JobKey key) throws SchedulerException {
-		getScheduler().deleteJob(key);
-		LOG.debug("DeleteJob " + key);
-	}
 
 	/**
 	 * Создает триггер запуска задания.
@@ -127,7 +55,7 @@ public abstract class JobController {
 	 * @param start
 	 * @return
 	 */
-	protected Trigger createCronTrigger(TriggerKey key, String cronString, Date start) {
+	public Trigger createCronTrigger(TriggerKey key, String cronString, Date start) {
 		TriggerBuilder<Trigger> rv = TriggerBuilder.newTrigger().withIdentity(key);
 		if (start == null) {
 			rv.startNow();
@@ -146,7 +74,7 @@ public abstract class JobController {
 	 * @param tKey
 	 * @param startDate
 	 */
-	protected void createFutureJob(Class<? extends Job> jobClass, String name, String group, Date startDate) {
+	public void createFutureJob(Class<? extends Job> jobClass, String name, String group, Date startDate) {
 		try {
 			final JobDetail alarmJob = JobBuilder.newJob(jobClass).withIdentity(name, group).build();
 			final SimpleTrigger trigger = TriggerBuilder.newTrigger().withIdentity(name, group).forJob(alarmJob)
@@ -157,8 +85,80 @@ public abstract class JobController {
 		}
 	}
 
+	/**
+	 * Ударяет задачу.
+	 * 
+	 * @param key
+	 * @throws SchedulerException
+	 */
+	public void deleteJobNow(JobKey key) throws SchedulerException {
+		getScheduler().deleteJob(key);
+		LOG.debug("DeleteJob " + key);
+	}
+
 	public Scheduler getScheduler() {
 		return scheduler;
+	}
+
+	@SuppressWarnings("unused")
+	private Set<? extends Trigger> newHashSet(Trigger... trigger) {
+		Set<Trigger> set = new HashSet<>();
+		for (Trigger t : trigger) {
+			set.add(t);
+		}
+		return set;
+	}
+
+	/**
+	 * Перезапуск задания.
+	 * 
+	 * @param key
+	 * @param cronString
+	 * @throws SchedulerException
+	 */
+	public void rescheduleJobNow(TriggerKey key, String cronString) throws SchedulerException {
+		Trigger trigger = createCronTrigger(key, cronString, null);
+		getScheduler().rescheduleJob(key, trigger);
+		LOG.debug("RescheduleJob " + key + " = " + cronString);
+	}
+
+	/**
+	 * Останавливает задачу.
+	 * 
+	 * @param key
+	 * @throws SchedulerException
+	 */
+	public void resumeJobNow(JobKey key) throws SchedulerException {
+		getScheduler().resumeJob(key);
+		LOG.debug("ResumeJob " + key);
+	}
+
+	@PostConstruct
+	public void scheduleJobs() {
+		scheduler = ra.getScheduler();
+		try {
+			getScheduler().setJobFactory(jobFactory);
+			getScheduler().start();
+		} catch (SchedulerException e) {
+			LOG.error("Error while creating scheduler", e);
+		}
+		startJobs();
+	}
+
+	/**
+	 * Запуск заданий.
+	 */
+	protected abstract void startJobs();
+
+	@PreDestroy
+	public void stopJobs() {
+		if (getScheduler() != null) {
+			try {
+				getScheduler().shutdown(false);
+			} catch (SchedulerException e) {
+				LOG.error("Error while closing scheduler", e);
+			}
+		}
 	}
 
 }

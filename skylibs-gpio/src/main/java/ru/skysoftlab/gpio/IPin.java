@@ -1,9 +1,11 @@
 package ru.skysoftlab.gpio;
 
-public interface IPin {
-	
+import java.io.Serializable;
+
+public interface IPin extends Serializable {
+
 	public String getName();
-	
+
 	public PinType getPinType();
 
 }
