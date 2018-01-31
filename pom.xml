@@ -100,5 +100,6 @@
 		<module>skylibs-cdi-one-shot-scope-extension</module>
 		<module>skylibs-vaadin-highcharts</module>
 		<module>skylibs-gpio</module>
+		<module>skylibs-swt</module>
 	</modules>
 </project>
