@@ -1,6 +1,5 @@
 package ru.skysoftlab.swt;
 
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -14,12 +13,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import ru.skysoftlab.skylibs.common.EditableEntity;
+public abstract class AbstractEditDialog extends TitleAreaDialog implements SelectionListener {
 
-public abstract class AbstractEditDialog<T extends EditableEntity<?>> extends TitleAreaDialog implements
-		EditEntityDialog<T>, SelectionListener {
-
-	protected T entity;
 	private GridData data = new GridData();
 
 	public AbstractEditDialog(Shell parentShell) {
@@ -31,12 +26,6 @@ public abstract class AbstractEditDialog<T extends EditableEntity<?>> extends Ti
 	@Override
 	protected Control createContents(Composite parent) {
 		Control contents = super.createContents(parent);
-		String title = "Добавить " + getEntityName();
-		if (entity != null) {
-			title = "Изменить " + getEntityName();
-		}
-		setTitle(title);
-		setMessage(getEntityMessage(), IMessageProvider.INFORMATION);
 		return contents;
 	}
 
@@ -48,21 +37,6 @@ public abstract class AbstractEditDialog<T extends EditableEntity<?>> extends Ti
 		button.setFont(JFaceResources.getDialogFont());
 		button.addSelectionListener(this);
 	}
-
-	@Override
-	public void editOpen(T department) {
-		this.entity = department;
-		super.open();
-	}
-
-	@Override
-	public T getEntity() {
-		return entity;
-	}
-
-	protected abstract String getEntityName();
-
-	protected abstract String getEntityMessage();
 
 	/**
 	 * Sent when default selection occurs in the control. The default behavior
