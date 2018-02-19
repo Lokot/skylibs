@@ -1,4 +1,4 @@
-package ru.skysoftlab.swt;
+package ru.skysoftlab.swt.viewer;
 
 import java.util.Collection;
 
