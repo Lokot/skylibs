@@ -1,25 +1,11 @@
-package ru.skysoftlab.swt.viewer;
+package ru.skysoftlab.swt.viewers;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 
-import ru.skysoftlab.skylibs.common.hierarchy.IsParent;
 import ru.skysoftlab.skylibs.common.hierarchy.IsChild;
+import ru.skysoftlab.skylibs.common.hierarchy.IsParent;
 
-public class ParentChildTreeContentProvider implements ITreeContentProvider {
-
-	@Override
-	public Object[] getElements(Object inputElement) {
-		if (inputElement instanceof IDataModel)
-			return ((IDataModel) inputElement).getData().toArray();
-		return null;
-	}
-
-	@Override
-	public void inputChanged(Viewer v, Object oldInput, Object newInput) { }
-
-	@Override
-	public void dispose() { }
+public class ParentChildTreeContentProvider extends StructuredContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {

@@ -27,6 +27,12 @@
 			<version>3.5.0.I20090525-2000</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>org.eclipse.core.commands</artifactId>
+			<version>3.6.0</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>

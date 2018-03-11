@@ -1,13 +1,13 @@
-package ru.skysoftlab.swt.viewer;
+package ru.skysoftlab.swt.viewers;
 
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 
 public abstract class AbstractViewerComparator extends ViewerComparator {
 
-	private int propertyIndex;
-	private static final int DESCENDING = 0;
-	private int direction = 1;
+	protected int propertyIndex;
+	protected static final int DESCENDING = 0;
+	protected int direction = 1;
 
 	public AbstractViewerComparator() {
 		this.propertyIndex = 0;
@@ -19,6 +19,8 @@ public abstract class AbstractViewerComparator extends ViewerComparator {
 	}
 
 	public void setColumn(int column) {
+		// TODO удалить
+		System.out.println(column);
 		if (column == this.propertyIndex) {
 			direction = 1 - direction;
 		} else {
