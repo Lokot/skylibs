@@ -1,0 +1,175 @@
+package ru.skysoftlab.swt;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+
+import ru.skysoftlab.skylibs.common.EditableEntity;
+
+public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity<?>>
+		extends AbstractEditEntityDialog<T> {
+
+	private Class<T> entityClass;
+	protected Map<String, Control> controls = new HashMap<>();
+	protected Map<String, Map<Integer, IControlItem>> listControlsArgs = new HashMap<>();
+
+	public AbstractAnnotatedEditEntityDialog(Class<T> aEntityClass, Shell parentShell) {
+		super(parentShell);
+		entityClass = aEntityClass;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse
+	 * .swt.widgets.Composite)
+	 */
+	@Override
+	protected Control createDialogArea(Composite parent) {
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		parent.setLayout(layout);
+
+		List<Method> annList = new ArrayList<>();
+		for (Method method : entityClass.getMethods()) {
+			if (method.isAnnotationPresent(ru.skysoftlab.swt.viewers.annotations.DialogProp.class)) {
+				annList.add(method);
+			}
+		}
+		annList.sort(new Comparator<Method>() {
+			@Override
+			public int compare(Method o1, Method o2) {
+				ru.skysoftlab.swt.viewers.annotations.DialogProp ann1 = o1
+						.getAnnotation(ru.skysoftlab.swt.viewers.annotations.DialogProp.class);
+				ru.skysoftlab.swt.viewers.annotations.DialogProp ann2 = o2
+						.getAnnotation(ru.skysoftlab.swt.viewers.annotations.DialogProp.class);
+				return Integer.compare(ann1.index(), ann2.index());
+			}
+		});
+		for (Method method : annList) {
+			ru.skysoftlab.swt.viewers.annotations.DialogProp ann = method
+					.getAnnotation(ru.skysoftlab.swt.viewers.annotations.DialogProp.class);
+
+			Label label = new Label(parent, SWT.NONE);
+			label.setText(ann.name());
+
+			if (ann.control().equals(Combo.class)) {
+				if (method.getReturnType().isEnum()) {
+					Map<Integer, IControlItem> args = new HashMap<>();
+					int i = 0;
+					int selectedItemIndex = -1;
+					Object propValue = null;
+					if (entity != null) {
+						try {
+							propValue = method.invoke(entity);
+						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					for (Object enumObj : method.getReturnType().getEnumConstants()) {
+						args.put(i, (IControlItem) enumObj);
+						if (entity != null && propValue != null && propValue.equals(enumObj)) {
+							selectedItemIndex = i;
+						}
+						i++;
+					}
+					Combo control = createCombo(parent, args);
+					String propName = getPropName(method); 
+					controls.put(propName, control);
+					listControlsArgs.put(propName, args);
+					if (selectedItemIndex >= 0) {
+						control.select(selectedItemIndex);
+					}
+				} else {
+					// TODO подумать
+					throw new RuntimeException("Не верный тип данных для комбобокса");
+				}
+			} else {
+				Text control = new Text(parent, SWT.BORDER);
+				controls.put(getPropName(method), control);
+				control.setLayoutData(data);
+				control.setEditable(ann.editable());
+				if (entity != null) {
+					try {
+						control.setText(method.invoke(entity).toString());
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+
+		}
+		return parent;
+	}
+
+	private String getPropName(Method method) {
+		return method.getName().replaceFirst("get", "").replaceFirst("set", "").toLowerCase();
+	}
+
+	private Combo createCombo(Composite parent, Map<Integer, IControlItem> args) {
+		Combo rv = new Combo(parent, 8);
+		for (Entry<Integer, IControlItem> entry : args.entrySet()) {
+			rv.add(entry.getValue().getName(), entry.getKey());
+		}
+		return rv;
+	}
+
+	@Override
+	public void widgetSelected(SelectionEvent e) {
+		// TODO реализовать проверки из аннотаций (возможно валидатор)
+		if (entity == null) {
+			createNewEntity();
+		}
+		// TODO валидатор вставить
+		// setErrorMessage("Заполните все поля");
+
+		for (Method method : entityClass.getMethods()) {
+			if (method.getName().contains("set")) {
+				String propName = getPropName(method);
+				Control control = controls.get(propName);
+				if (control != null) {
+					try {
+						if (control instanceof Combo) {
+							Combo combo = (Combo) control;
+							IControlItem value = listControlsArgs.get(propName).get(combo.getSelectionIndex());
+							method.invoke(entity, value);
+						} else {
+							method.invoke(entity, ((Text) control).getText());
+						}
+					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		}
+		close();
+	}
+
+	public void createNewEntity() {
+		try {
+			entity = entityClass.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+}

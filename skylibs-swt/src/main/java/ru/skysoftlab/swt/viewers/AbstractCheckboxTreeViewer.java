@@ -45,9 +45,13 @@ public abstract class AbstractCheckboxTreeViewer<T> extends CheckboxTreeViewer {
 			addFilter(filter);
 		ICheckStateListener listener = getICheckStateListener();
 		if (listener != null)
-			addCheckStateListener(getICheckStateListener());
+			addCheckStateListener(listener);
 	}
 
+	/**
+	 * Возвращает обработчик выбора.
+	 * @return
+	 */
 	protected abstract ICheckStateListener getICheckStateListener();
 
 	public void setSearchString(String search) {

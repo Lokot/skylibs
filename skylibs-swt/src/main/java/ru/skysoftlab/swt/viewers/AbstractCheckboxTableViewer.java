@@ -13,8 +13,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 public abstract class AbstractCheckboxTableViewer<T> extends CheckboxTableViewer {
@@ -24,19 +23,16 @@ public abstract class AbstractCheckboxTableViewer<T> extends CheckboxTableViewer
 	protected AbstractViewerComparator comparator;
 	protected AbstractViewerFilter<?> filter;
 
-	@SuppressWarnings("deprecation")
-	public AbstractCheckboxTableViewer(Class<T> aClazz, Composite parent, IDataModel dm,
+	public AbstractCheckboxTableViewer(Class<T> aClazz, Table table, IDataModel dm,
 			AbstractViewerComparator aComparator, AbstractViewerFilter<?> aFilter) {
-		super(parent, SWT.MULTI | SWT.H_SCROLL | SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.FULL_SELECTION);
+		super(table);
 		clazz = aClazz;
 		comparator = aComparator;
 		filter = aFilter;
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		getTable().setLayoutData(gridData);
 		createColumns();
 		getTable().setHeaderVisible(true);
 		getTable().setLinesVisible(true);
-		setContentProvider(new ParentChildTreeContentProvider());
+		setContentProvider(new StructuredContentProvider());
 		super.setInput(dm);
 		if (comparator != null)
 			setComparator(comparator);
@@ -44,16 +40,20 @@ public abstract class AbstractCheckboxTableViewer<T> extends CheckboxTableViewer
 			addFilter(filter);
 		ICheckStateListener listener = getICheckStateListener();
 		if (listener != null)
-			addCheckStateListener(getICheckStateListener());
+			addCheckStateListener(listener);
 	}
 
+	/**
+	 * Возвращает обработчик выбора.
+	 * 
+	 * @return
+	 */
 	protected abstract ICheckStateListener getICheckStateListener();
 
 	public void setSearchString(String search) {
 		filter.setSearchString(search);
 	}
 
-	@SuppressWarnings("unused")
 	protected TableViewerColumn createTableViewerColumn(String header, int width, int idx) {
 		TableViewerColumn column = new TableViewerColumn(this, SWT.LEFT, idx);
 		column.getColumn().setText(header);

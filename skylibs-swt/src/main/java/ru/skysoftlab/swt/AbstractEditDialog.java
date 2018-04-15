@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Text;
 
 public abstract class AbstractEditDialog extends TitleAreaDialog implements SelectionListener {
 
-	private GridData data = new GridData();
+	protected GridData data = new GridData();
 
 	public AbstractEditDialog(Shell parentShell) {
 		super(parentShell);

@@ -51,4 +51,5 @@ public class Utils {
 	public static boolean isSolaris() {
 		return (OS.indexOf("sunos") >= 0);
 	}
+	
 }

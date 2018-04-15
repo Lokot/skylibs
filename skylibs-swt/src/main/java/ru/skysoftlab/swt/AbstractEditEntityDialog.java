@@ -6,7 +6,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 import ru.skysoftlab.skylibs.common.EditableEntity;
-
+// TODO создание сущности из класса
 public abstract class AbstractEditEntityDialog<T extends EditableEntity<?>> extends AbstractEditDialog implements
 		EditEntityDialog<T>{
 
@@ -24,6 +24,7 @@ public abstract class AbstractEditEntityDialog<T extends EditableEntity<?>> exte
 			title = "Изменить " + getEntityName();
 		}
 		setTitle(title);
+		// TODO не отображается при повторном вызове
 		setMessage(getEntityMessage(), IMessageProvider.INFORMATION);
 		return contents;
 	}
