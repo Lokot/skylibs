@@ -6,9 +6,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 import ru.skysoftlab.skylibs.common.EditableEntity;
+
 // TODO создание сущности из класса
-public abstract class AbstractEditEntityDialog<T extends EditableEntity<?>> extends AbstractEditDialog implements
-		EditEntityDialog<T>{
+public abstract class AbstractEditEntityDialog<T extends EditableEntity<?>> extends AbstractEditDialog
+		implements EditEntityDialog<T> {
 
 	protected T entity;
 
@@ -40,7 +41,7 @@ public abstract class AbstractEditEntityDialog<T extends EditableEntity<?>> exte
 		return entity;
 	}
 
-	protected abstract String getEntityName();
-
 	protected abstract String getEntityMessage();
+
+	protected abstract String getEntityName();
 }

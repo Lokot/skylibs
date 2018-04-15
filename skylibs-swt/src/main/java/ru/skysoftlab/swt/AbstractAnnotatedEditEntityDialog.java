@@ -8,7 +8,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,13 +33,24 @@ import ru.skysoftlab.skylibs.common.EditableEntity;
 public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity<?>>
 		extends AbstractEditEntityDialog<T> {
 
-	private Class<T> entityClass;
 	protected Map<String, Control> controls = new HashMap<>();
+	protected Map<Control, ControlDecoration> decorations = new HashMap<>();
+	private Class<T> entityClass;
+	private FieldDecoration errorFieldDecoration = FieldDecorationRegistry.getDefault()
+			.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 	protected Map<String, Map<Integer, IControlItem>> listControlsArgs = new HashMap<>();
 
 	public AbstractAnnotatedEditEntityDialog(Class<T> aEntityClass, Shell parentShell) {
 		super(parentShell);
 		entityClass = aEntityClass;
+	}
+
+	private Combo createCombo(Composite parent, Map<Integer, IControlItem> args) {
+		Combo rv = new Combo(parent, 8);
+		for (Entry<Integer, IControlItem> entry : args.entrySet()) {
+			rv.add(entry.getValue().getName(), entry.getKey());
+		}
+		return rv;
 	}
 
 	/*
@@ -42,6 +62,9 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		GridLayout layout = new GridLayout();
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		layout.marginRight = 8; // Margin at right large enough for your decoration
 		layout.numColumns = 2;
 		parent.setLayout(layout);
 
@@ -90,8 +113,10 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 						i++;
 					}
 					Combo control = createCombo(parent, args);
-					String propName = getPropName(method); 
+					String propName = getPropName(method);
 					controls.put(propName, control);
+					ControlDecoration dec = new ControlDecoration(control, SWT.RIGHT | SWT.TOP, control.getParent());
+					decorations.put(control, dec);
 					listControlsArgs.put(propName, args);
 					if (selectedItemIndex >= 0) {
 						control.select(selectedItemIndex);
@@ -103,6 +128,8 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 			} else {
 				Text control = new Text(parent, SWT.BORDER);
 				controls.put(getPropName(method), control);
+				ControlDecoration dec = new ControlDecoration(control, SWT.RIGHT | SWT.TOP, control.getParent());
+				decorations.put(control, dec);
 				control.setLayoutData(data);
 				control.setEditable(ann.editable());
 				if (entity != null) {
@@ -119,39 +146,50 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 		return parent;
 	}
 
+	public void createNewEntity() {
+		try {
+			entity = entityClass.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	private String getPropName(Method method) {
 		return method.getName().replaceFirst("get", "").replaceFirst("set", "").toLowerCase();
 	}
 
-	private Combo createCombo(Composite parent, Map<Integer, IControlItem> args) {
-		Combo rv = new Combo(parent, 8);
-		for (Entry<Integer, IControlItem> entry : args.entrySet()) {
-			rv.add(entry.getValue().getName(), entry.getKey());
-		}
-		return rv;
-	}
-
 	@Override
 	public void widgetSelected(SelectionEvent e) {
-		// TODO реализовать проверки из аннотаций (возможно валидатор)
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
 		if (entity == null) {
 			createNewEntity();
 		}
-		// TODO валидатор вставить
-		// setErrorMessage("Заполните все поля");
-
 		for (Method method : entityClass.getMethods()) {
 			if (method.getName().contains("set")) {
 				String propName = getPropName(method);
 				Control control = controls.get(propName);
 				if (control != null) {
 					try {
+						Object value = null;
 						if (control instanceof Combo) {
 							Combo combo = (Combo) control;
-							IControlItem value = listControlsArgs.get(propName).get(combo.getSelectionIndex());
+							value = listControlsArgs.get(propName).get(combo.getSelectionIndex());
 							method.invoke(entity, value);
 						} else {
-							method.invoke(entity, ((Text) control).getText());
+							value = ((Text) control).getText();
+							method.invoke(entity, value);
+						}
+						Set<ConstraintViolation<T>> violations = validator.validateValue(entityClass, propName, value);
+						if (!violations.isEmpty()) {
+							ControlDecoration dec = decorations.get(control);
+							dec.setImage(errorFieldDecoration.getImage());
+							dec.setDescriptionText(violations.iterator().next().getMessage());
+							dec.show();
+						} else {
+							ControlDecoration dec = decorations.get(control);
+							dec.hide();
 						}
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 						// TODO Auto-generated catch block
@@ -160,15 +198,16 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 				}
 			}
 		}
-		close();
-	}
-
-	public void createNewEntity() {
-		try {
-			entity = entityClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		// TODO оптимизировать
+		Set<ConstraintViolation<T>> violations = validator.validate(entity);
+		if (violations.isEmpty()) {
+			close();
+		} else {
+			String message = "";
+			for (ConstraintViolation<T> violation : violations) {
+				message += violation.getMessage() + "\n";
+			}
+			setErrorMessage(message);
 		}
 	}
 
