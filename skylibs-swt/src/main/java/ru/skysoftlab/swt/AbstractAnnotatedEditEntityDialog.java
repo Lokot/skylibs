@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -21,36 +20,26 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
 import ru.skysoftlab.skylibs.common.EditableEntity;
+import ru.skysoftlab.swt.control.IControlAdapter;
 
 public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity<?>>
 		extends AbstractEditEntityDialog<T> {
 
-	protected Map<String, Control> controls = new HashMap<>();
-	protected Map<Control, ControlDecoration> decorations = new HashMap<>();
-	private Class<T> entityClass;
 	private FieldDecoration errorFieldDecoration = FieldDecorationRegistry.getDefault()
 			.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
+	
+	protected Map<String, IControlAdapter<?>> controls = new HashMap<>();
+	protected Map<IControlAdapter<?>, ControlDecoration> decorations = new HashMap<>();
 	protected Map<String, Map<Integer, IControlItem>> listControlsArgs = new HashMap<>();
 
 	public AbstractAnnotatedEditEntityDialog(Class<T> aEntityClass, Shell parentShell) {
-		super(parentShell);
-		entityClass = aEntityClass;
-	}
-
-	private Combo createCombo(Composite parent, Map<Integer, IControlItem> args) {
-		Combo rv = new Combo(parent, 8);
-		for (Entry<Integer, IControlItem> entry : args.entrySet()) {
-			rv.add(entry.getValue().getName(), entry.getKey());
-		}
-		return rv;
+		super(aEntityClass, parentShell);
 	}
 
 	/*
@@ -69,7 +58,7 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 		parent.setLayout(layout);
 
 		List<Method> annList = new ArrayList<>();
-		for (Method method : entityClass.getMethods()) {
+		for (Method method : getEntityClass().getMethods()) {
 			if (method.isAnnotationPresent(ru.skysoftlab.swt.viewers.annotations.DialogProp.class)) {
 				annList.add(method);
 			}
@@ -90,69 +79,30 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 
 			Label label = new Label(parent, SWT.NONE);
 			label.setText(ann.name());
-
-			if (ann.control().equals(Combo.class)) {
-				if (method.getReturnType().isEnum()) {
-					Map<Integer, IControlItem> args = new HashMap<>();
-					int i = 0;
-					int selectedItemIndex = -1;
-					Object propValue = null;
-					if (entity != null) {
-						try {
-							propValue = method.invoke(entity);
-						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					for (Object enumObj : method.getReturnType().getEnumConstants()) {
-						args.put(i, (IControlItem) enumObj);
-						if (entity != null && propValue != null && propValue.equals(enumObj)) {
-							selectedItemIndex = i;
-						}
-						i++;
-					}
-					Combo control = createCombo(parent, args);
-					String propName = getPropName(method);
-					controls.put(propName, control);
-					ControlDecoration dec = new ControlDecoration(control, SWT.RIGHT | SWT.TOP, control.getParent());
-					decorations.put(control, dec);
-					listControlsArgs.put(propName, args);
-					if (selectedItemIndex >= 0) {
-						control.select(selectedItemIndex);
-					}
-				} else {
-					// TODO подумать
-					throw new RuntimeException("Не верный тип данных для комбобокса");
-				}
-			} else {
-				Text control = new Text(parent, SWT.BORDER);
-				controls.put(getPropName(method), control);
-				ControlDecoration dec = new ControlDecoration(control, SWT.RIGHT | SWT.TOP, control.getParent());
-				decorations.put(control, dec);
-				control.setLayoutData(data);
-				control.setEditable(ann.editable());
+			
+			Class<? extends IControlAdapter<? extends Control>> adapterClass = ann.adapter();
+			try {
+				IControlAdapter<? extends Control> adapter = adapterClass.newInstance();
+				adapter.createControl(parent);
+				controls.put(getPropName(method), adapter);
+				ControlDecoration dec = new ControlDecoration(adapter.getControl(), SWT.RIGHT | SWT.TOP, adapter.getControl().getParent());
+				decorations.put(adapter, dec);
+				adapter.getControl().setLayoutData(data);
+				adapter.setEditable(ann.editable());
 				if (entity != null) {
 					try {
-						control.setText(method.invoke(entity).toString());
+						adapter.setControlValue(method.invoke(entity));
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
+			} catch (InstantiationException | IllegalAccessException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-
 		}
 		return parent;
-	}
-
-	public void createNewEntity() {
-		try {
-			entity = entityClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	private String getPropName(Method method) {
@@ -166,29 +116,22 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 		if (entity == null) {
 			createNewEntity();
 		}
-		for (Method method : entityClass.getMethods()) {
+		for (Method method : getEntityClass().getMethods()) {
 			if (method.getName().contains("set")) {
 				String propName = getPropName(method);
-				Control control = controls.get(propName);
-				if (control != null) {
+				IControlAdapter<?> adapter = controls.get(propName);
+				if (adapter != null) {
 					try {
-						Object value = null;
-						if (control instanceof Combo) {
-							Combo combo = (Combo) control;
-							value = listControlsArgs.get(propName).get(combo.getSelectionIndex());
-							method.invoke(entity, value);
-						} else {
-							value = ((Text) control).getText();
-							method.invoke(entity, value);
-						}
-						Set<ConstraintViolation<T>> violations = validator.validateValue(entityClass, propName, value);
+						Object value = adapter.getControlValue();
+						Set<ConstraintViolation<T>> violations = validator.validateValue(getEntityClass(), propName, value);
 						if (!violations.isEmpty()) {
-							ControlDecoration dec = decorations.get(control);
+							ControlDecoration dec = decorations.get(adapter);
 							dec.setImage(errorFieldDecoration.getImage());
 							dec.setDescriptionText(violations.iterator().next().getMessage());
 							dec.show();
 						} else {
-							ControlDecoration dec = decorations.get(control);
+							method.invoke(entity, value);
+							ControlDecoration dec = decorations.get(adapter);
 							dec.hide();
 						}
 					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
@@ -201,6 +144,7 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 		// TODO оптимизировать
 		Set<ConstraintViolation<T>> violations = validator.validate(entity);
 		if (violations.isEmpty()) {
+			commitEntity();
 			close();
 		} else {
 			String message = "";
@@ -210,5 +154,5 @@ public abstract class AbstractAnnotatedEditEntityDialog<T extends EditableEntity
 			setErrorMessage(message);
 		}
 	}
-
+	
 }

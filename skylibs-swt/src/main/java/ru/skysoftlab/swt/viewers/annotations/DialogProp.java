@@ -7,13 +7,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
+
+import ru.skysoftlab.swt.control.IControlAdapter;
+import ru.skysoftlab.swt.control.adapters.TextAdapter;
 
 @Retention(RUNTIME)
 @Target(METHOD)
 public @interface DialogProp {
 	int index();
 	String name();
-	Class<? extends Control> control() default Text.class;
+	Class<? extends IControlAdapter<? extends Control>> adapter() default TextAdapter.class;
 	boolean editable() default true;
 }
