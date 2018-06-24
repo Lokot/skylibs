@@ -90,6 +90,7 @@
 	</build>
 
 	<modules>
+		<module>skylibs-bundles</module>
 		<module>skylibs-common</module>
 		<module>skylibs-persistence</module>
 		<module>skylibs-impl</module>

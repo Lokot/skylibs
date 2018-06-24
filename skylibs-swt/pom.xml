@@ -4,11 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>ru.skysoftlab.skylibs</groupId>
-		<artifactId>skylibs-parent</artifactId>
+		<artifactId>skylibs-bundles</artifactId>
 		<version>1.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>skylibs-swt</artifactId>
+	<packaging>bundle</packaging>
 	<repositories>
 		<repository>
 			<id>WSO2 Repo</id>
@@ -16,6 +17,11 @@
 			<name>WSO2 Repo</name>
 		</repository>
 	</repositories>
+	<properties>
+		<osgi.import.pkg>*</osgi.import.pkg>
+		<osgi.export.pkg>ru.skysoftlab.swt.*</osgi.export.pkg>
+		<osgi.dynamic.pkg>*</osgi.dynamic.pkg>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>ru.skysoftlab.skylibs</groupId>

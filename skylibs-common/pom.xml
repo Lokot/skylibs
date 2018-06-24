@@ -1,11 +1,30 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>ru.skysoftlab.skylibs</groupId>
-		<artifactId>skylibs-parent</artifactId>
+		<artifactId>skylibs-bundles</artifactId>
 		<version>1.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>skylibs-common</artifactId>
+	<packaging>bundle</packaging>
+	<properties>
+		<osgi.import.pkg>
+			javax.enterprise.util,
+			javax.enterprise.context,
+			javax.inject,
+			javax.enterprise.inject,
+			javax.enterprise.inject.spi,
+			*
+		</osgi.import.pkg>
+		<osgi.export.pkg>ru.skysoftlab.skylibs.*</osgi.export.pkg>
+<!-- 		<osgi.capabilities.require> -->
+<!-- 			org.ops4j.pax.cdi.extension; -->
+<!-- 			filter:="(&amp;(extension=pax-cdi-extension)(version&gt;=${version;==;${pax.cdi.osgi.version}})(!(version&gt;=${version;=+;${pax.cdi.osgi.version}})))", -->
+<!-- 			osgi.extender; filter:="(osgi.extender=pax.cdi)" -->
+<!-- 		</osgi.capabilities.require> -->
+		<osgi.dynamic.pkg>*</osgi.dynamic.pkg>
+	</properties>
 </project>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target name="Skysoftlab Target Platform" sequenceNumber="5">
+<locations>
+<location path="${eclipse_home}" type="Profile"/>
+<location path="${project_loc:/skylibs-target-platform}/maven_libs" type="Directory"/>
+</locations>
+<environment>
+<os>win32</os>
+<ws>win32</ws>
+<arch>x86_64</arch>
+<nl>ru_RU</nl>
+</environment>
+</target>
