@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd" name="${package}.root"
+    xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <fileSets>
+    <fileSet filtered="true" encoding="UTF-8">
+      <directory>.mvn</directory>
+      <includes>
+        <include>**/*.xml</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+  <modules>
+    <module id="${rootArtifactId}.bundles" dir="bundles" name="${rootArtifactId}.bundles">
+      <modules>
+        <module id="${rootArtifactId}.plugin1" dir="__rootArtifactId__.plugin1" name="${rootArtifactId}.plugin1">
+          <fileSets>
+            <fileSet filtered="true" encoding="UTF-8">
+              <directory>META-INF</directory>
+              <includes>
+                <include>**/*.MF</include>
+              </includes>
+            </fileSet>
+            <fileSet filtered="true" encoding="UTF-8">
+              <directory></directory>
+              <includes>
+                <include>build.properties</include>
+              </includes>
+            </fileSet>
+          </fileSets>
+        </module>
+        <module id="${rootArtifactId}.rcp" dir="__rootArtifactId__.rcp" name="${rootArtifactId}.rcp">
+          <fileSets>
+            <fileSet filtered="true" packaged="true" encoding="UTF-8">
+              <directory>src</directory>
+              <includes>
+                <include>**/*.java</include>
+              </includes>
+            </fileSet>
+            <fileSet filtered="true" encoding="UTF-8">
+              <directory>META-INF</directory>
+              <includes>
+                <include>**/*.MF</include>
+              </includes>
+            </fileSet>
+            <fileSet encoding="UTF-8">
+              <directory>css</directory>
+              <includes>
+                <include>**/*.css</include>
+              </includes>
+            </fileSet>
+            <fileSet encoding="UTF-8">
+              <directory>icons</directory>
+              <includes>
+                <include>**/*.png</include>
+              </includes>
+            </fileSet>
+            <fileSet filtered="true" encoding="UTF-8">
+              <directory></directory>
+              <includes>
+                <include>build.properties</include>
+                <include>plugin.xml</include>
+              </includes>
+            </fileSet>
+            <fileSet filtered="true" encoding="UTF-8">
+              <directory></directory>
+              <includes>
+                <include>Application.e4xmi</include>
+              </includes>
+            </fileSet>
+          </fileSets>
+        </module>
+      </modules>
+    </module>
+    <module id="${rootArtifactId}.features" dir="features" name="${rootArtifactId}.features">
+      <modules>
+        <module id="${rootArtifactId}.feature" dir="__rootArtifactId__.feature" name="${rootArtifactId}.feature">
+          <fileSets>
+            <fileSet filtered="true" encoding="UTF-8">
+              <directory></directory>
+              <includes>
+                <include>build.properties</include>
+                <include>feature.xml</include>
+                <include>readme.txt</include>
+              </includes>
+            </fileSet>
+          </fileSets>
+        </module>
+      </modules>
+    </module>
+    <module id="${rootArtifactId}.releng" dir="releng" name="${rootArtifactId}.releng">
+      <fileSets>
+        <fileSet filtered="true" encoding="UTF-8">
+          <directory>__rootArtifactId__.configuration</directory>
+          <includes>
+            <include>**/*.xml</include>
+          </includes>
+        </fileSet>
+      </fileSets>
+      <modules>
+        <module id="${rootArtifactId}.update" dir="__rootArtifactId__.update" name="${rootArtifactId}.update">
+          <fileSets>
+            <fileSet filtered="true" encoding="UTF-8">
+              <directory></directory>
+              <includes>
+                <include>category.xml</include>
+              </includes>
+            </fileSet>
+          </fileSets>
+        </module>
+        <module id="${rootArtifactId}.product" dir="__rootArtifactId__.product" name="${rootArtifactId}.product">
+          <fileSets>
+            <fileSet filtered="true" encoding="UTF-8">
+              <directory></directory>
+              <includes>
+                <include>__rootArtifactId__.rcp.product</include>
+              </includes>
+            </fileSet>
+          </fileSets>
+        </module>
+        <module id="${rootArtifactId}.target" dir="__rootArtifactId__.target" name="${rootArtifactId}.target">
+          <fileSets>
+            <fileSet encoding="UTF-8">
+              <directory>maven_libs</directory>
+              <includes>
+                <include>**/*.jar</include>
+              </includes>
+            </fileSet>
+            <fileSet filtered="true" encoding="UTF-8">
+              <directory></directory>
+              <includes>
+                <include>__rootArtifactId__.target.target</include>
+              </includes>
+            </fileSet>
+          </fileSets>
+        </module>
+      </modules>
+    </module>
+  </modules>
+</archetype-descriptor>

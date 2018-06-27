@@ -102,5 +102,6 @@
 		<module>skylibs-vaadin-highcharts</module>
 		<module>skylibs-gpio</module>
 		<module>skylibs-swt</module>
+		<module>skylibs-tycho-archetype</module>
 	</modules>
 </project>

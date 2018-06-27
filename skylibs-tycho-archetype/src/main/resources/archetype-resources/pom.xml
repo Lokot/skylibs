@@ -1,0 +1,17 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>${groupId}</groupId>
+	<artifactId>${artifactId}</artifactId>
+	<version>${version}</version>
+	<packaging>pom</packaging>
+	<parent>
+		<groupId>${groupId}</groupId>
+		<artifactId>${package}.configuration</artifactId>
+		<version>${version}</version>
+		<relativePath>./releng/${package}.configuration</relativePath>
+	</parent>
+</project>

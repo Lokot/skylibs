@@ -1,0 +1,10 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/${package}.feature_1.0.0.qualifier.jar" id="${package}.feature" version="1.0.0.qualifier" os="win32" arch="x86">
+      <category name="tychoexample"/>
+   </feature>
+   <category-def name="tychoexample" label="Tycho Example"/>
+</site>
