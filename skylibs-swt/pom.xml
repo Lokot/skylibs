@@ -6,7 +6,7 @@
 		<groupId>ru.skysoftlab.skylibs</groupId>
 		<artifactId>skylibs-bundles</artifactId>
 		<version>1.0-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
+		<relativePath>../skylibs-bundles/pom.xml</relativePath>
 	</parent>
 	<artifactId>skylibs-swt</artifactId>
 	<packaging>bundle</packaging>
